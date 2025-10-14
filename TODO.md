@@ -77,7 +77,7 @@
 
 ### Convex Schema & Auth
 
-- [ ] **Define Convex schema (questions + embeddings tables)**
+- [x] **Define Convex schema (questions + embeddings tables)**
   ```
   Files: convex/schema.ts
   Approach: Follow chrondle pattern (defineSchema, defineTable, indexes)
@@ -93,6 +93,13 @@
   Test: Manual - Convex dashboard shows all 3 tables with indexes
   Module: Data model (questions, embeddings, users)
   Time: 30min
+
+  Work Log:
+  - Created schema with 3 tables: users, questions, embeddings
+  - Added appropriate indexes for efficient queries
+  - Vector index configured for 1536 dimensions (text-embedding-3-small)
+  - Schema compiles with TypeScript strict mode
+  - NOTE: Schema will sync to Convex when `npx convex dev` runs
   ```
 
 - [ ] **Install and configure Clerk authentication**
