@@ -18,7 +18,7 @@
 
 ### Project Setup
 
-- [~] **Initialize Next.js 15 project with TypeScript**
+- [x] **Initialize Next.js 15 project with TypeScript**
   ```
   Files: package.json, tsconfig.json, next.config.ts, src/app/layout.tsx, src/app/page.tsx
   Approach: Use create-next-app with App Router, follow chrondle pnpm + TypeScript patterns
@@ -29,7 +29,7 @@
   Time: 15min
   ```
 
-- [ ] **Configure TypeScript strict mode**
+- [x] **Configure TypeScript strict mode**
   ```
   Files: tsconfig.json
   Approach: Match chrondle strict settings (noUncheckedIndexedAccess, strictNullChecks)
@@ -39,7 +39,7 @@
   Time: 10min
   ```
 
-- [ ] **Install and initialize Convex**
+- [x] **Install and initialize Convex**
   ```
   Files: package.json, convex/, .env.local
   Commands: pnpm add convex, npx convex dev (creates convex/ directory)
@@ -48,6 +48,12 @@
   Test: Manual - convex dashboard shows project
   Module: Backend data layer
   Time: 15min
+
+  Work Log:
+  - Installed convex package
+  - Created convex/ directory with tsconfig.json
+  - Created .env.local template
+  - NOTE: Need to run `npx convex dev` manually in interactive terminal to complete setup
   ```
 
 - [ ] **Install shadcn/ui with components**

@@ -13,6 +13,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "convex": "^1.27.5",
     "geist": "^1.5.1",
     "next": "^15.5.0",
     "react": "^19.0.0",
