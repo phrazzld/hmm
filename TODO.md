@@ -56,7 +56,7 @@
   - NOTE: Need to run `npx convex dev` manually in interactive terminal to complete setup
   ```
 
-- [ ] **Install shadcn/ui with components**
+- [x] **Install shadcn/ui with components**
   ```
   Files: components.json, src/components/ui/*, tailwind.config.ts, src/lib/utils.ts
   Commands: npx shadcn@latest init, npx shadcn@latest add input button card textarea scroll-area badge
@@ -65,6 +65,14 @@
   Test: Import Button in page.tsx, renders correctly
   Module: UI component library
   Time: 15min
+
+  Work Log:
+  - Created components.json config
+  - Updated tailwind.config.ts with shadcn theme
+  - Updated globals.css with CSS variables
+  - Created src/lib/utils.ts with cn() helper
+  - Installed dependencies: clsx, tailwind-merge, class-variance-authority, lucide-react, tailwindcss-animate
+  - NOTE: Will add specific components (Button, Input, etc.) as needed in later tasks
   ```
 
 ### Convex Schema & Auth
