@@ -324,7 +324,7 @@
   - Hides: embedding generation, vector search, auth filtering
   ```
 
-- [ ] **Implement getRelatedQuestions action**
+- [x] **Implement getRelatedQuestions action**
   ```
   Files: convex/actions/search.ts
   Approach: Get question's embedding -> vector search (exclude self)
@@ -340,6 +340,15 @@
   Test: Integration test - verify self excluded, limit respected
   Module: Related questions (hides vector search details)
   Time: 45min
+
+  Work Log:
+  - Added getRelatedQuestions to convex/actions/search.ts
+  - Fetches embedding via internal.embeddings.getByQuestion
+  - Returns empty array if no embedding yet (graceful)
+  - Searches with limit+1 to account for self-exclusion
+  - Filters out the source question from results
+  - Reuses hydrateSearchResults for auth filtering
+  - Deep module: question ID in, related questions out
   ```
 
 ---

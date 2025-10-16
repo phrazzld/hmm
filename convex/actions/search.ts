@@ -47,3 +47,49 @@ export const semanticSearch = action({
     return searchResults;
   },
 });
+
+/**
+ * Get questions related to a specific question.
+ * Uses the question's embedding to find similar questions.
+ */
+export const getRelatedQuestions = action({
+  args: {
+    questionId: v.id("questions"),
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const limit = args.limit ?? 5;
+
+    // Get the embedding for this question
+    const embedding = await ctx.runQuery(internal.embeddings.getByQuestion, {
+      questionId: args.questionId,
+    });
+
+    if (!embedding) {
+      // Question doesn't have an embedding yet
+      return [];
+    }
+
+    // Search for similar questions (get extra to account for filtering self)
+    const results = await ctx.vectorSearch("embeddings", "by_embedding", {
+      vector: embedding.embedding,
+      limit: limit + 1, // +1 to account for self
+    });
+
+    // Filter out the current question
+    const embeddingIds = results
+      .filter((r) => r._id !== embedding._id)
+      .slice(0, limit)
+      .map((r) => r._id);
+
+    // Hydrate and filter by user
+    const relatedQuestions = await ctx.runQuery(
+      internal.questions.hydrateSearchResults,
+      {
+        embeddingIds,
+      }
+    );
+
+    return relatedQuestions;
+  },
+});
