@@ -172,7 +172,7 @@
   - Deep module: callers just pass text, all complexity hidden
   ```
 
-- [ ] **Implement getQuestions query (paginated list)**
+- [x] **Implement getQuestions query (paginated list)**
   ```
   Files: convex/questions.ts
   Approach: Query by userId, order by createdAt desc, take(50)
@@ -184,9 +184,15 @@
   Test: Integration test - insert 3 questions, verify order
   Module: Question retrieval (hides pagination, filtering)
   Time: 20min
+
+  Work Log:
+  - Implemented getQuestions query with pagination
+  - Auth in queries: look up user by Clerk ID (can't use requireAuth - no insert in queries)
+  - Returns empty array if user doesn't exist yet (graceful degradation)
+  - Deep module: simple interface, hides auth lookup + pagination
   ```
 
-- [ ] **Implement getQuestion query (single question by ID)**
+- [x] **Implement getQuestion query (single question by ID)**
   ```
   Files: convex/questions.ts
   Approach: Get by ID, verify ownership
@@ -200,6 +206,12 @@
   Test: Unit test - verify ownership check
   Module: Single question access (hides auth check)
   Time: 15min
+
+  Work Log:
+  - Implemented getQuestion with ownership verification
+  - Auth via Clerk ID lookup (query ctx limitation)
+  - Throws clear errors: "Not found" vs "Not authorized"
+  - Security: no data leakage across users
   ```
 
 ### AI Layer (Actions)
