@@ -12,6 +12,15 @@
 - **Data Layer:** Convex schema (questions + embeddings tables, vector index)
 - **AI Layer:** Convex actions (OpenAI API calls, retry logic)
 
+**shadcn/ui MCP Guidelines:**
+- **ALWAYS** try shadcn MCP tools first before manual installation
+- Use `mcp__shadcn__search_items_in_registries` to find components
+- Use `mcp__shadcn__view_items_in_registries` to see component details
+- Use `mcp__shadcn__get_item_examples_from_registries` for usage patterns
+- Use `mcp__shadcn__get_add_command_for_items` to get correct CLI command
+- Registry configured: `@shadcn`
+- Prefer MCP-provided examples over guessing implementation
+
 ---
 
 ## Phase 1: Foundation & Schema (Day 1)
