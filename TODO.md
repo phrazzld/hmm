@@ -149,7 +149,7 @@
 
 ### Question Capture (Mutations)
 
-- [ ] **Implement createQuestion mutation**
+- [x] **Implement createQuestion mutation**
   ```
   Files: convex/questions.ts
   Approach: Simple insert to questions table, schedule embedding action
@@ -163,6 +163,13 @@
   Test: Integration test - mock db.insert, verify scheduler called
   Module: Question creation (hides auth, timestamps, scheduling)
   Time: 30min
+
+  Work Log:
+  - Created createQuestion mutation with simple interface
+  - Uses requireAuth to get userId (or throw if unauthenticated)
+  - Auto-generates timestamps (createdAt, updatedAt)
+  - TODO commented for scheduler (will implement with embedding action)
+  - Deep module: callers just pass text, all complexity hidden
   ```
 
 - [ ] **Implement getQuestions query (paginated list)**
