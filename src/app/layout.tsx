@@ -4,6 +4,7 @@ import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { ConvexClientProvider } from "@/components/providers/ConvexClientProvider";
 import { SignInButton } from "@/components/auth/SignInButton";
 import { UserButton } from "@/components/auth/UserButton";
+import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -34,6 +35,7 @@ export default function RootLayout({
             </div>
           </header>
           <main>{children}</main>
+          <Toaster />
         </ConvexClientProvider>
       </body>
     </html>
