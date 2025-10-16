@@ -111,3 +111,50 @@ export const getById = internalQuery({
     return question;
   },
 });
+
+/**
+ * Hydrate search results with question data (internal only).
+ * Filters by current user for security.
+ */
+export const hydrateSearchResults = internalQuery({
+  args: {
+    embeddingIds: v.array(v.id("embeddings")),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return [];
+    }
+
+    // Get user
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
+      .unique();
+
+    if (!user) {
+      return [];
+    }
+
+    // Get embeddings and their questions
+    const results = [];
+    for (const embeddingId of args.embeddingIds) {
+      const embedding = await ctx.db.get(embeddingId);
+      if (!embedding) continue;
+
+      const question = await ctx.db.get(embedding.questionId);
+      if (!question) continue;
+
+      // Only return questions owned by the current user
+      if (question.userId === user._id) {
+        results.push({
+          question,
+          // Note: similarity score comes from vector search but isn't available here
+          // Could be passed through embeddingIds if needed
+        });
+      }
+    }
+
+    return results;
+  },
+});

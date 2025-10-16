@@ -297,7 +297,7 @@
 
 ### Semantic Search (Queries & Actions)
 
-- [ ] **Implement semanticSearch action**
+- [x] **Implement semanticSearch action**
   ```
   Files: convex/actions/search.ts
   Approach: Generate query embedding -> vector search -> hydrate questions
@@ -313,6 +313,15 @@
   Test: Integration test - insert 5 questions with embeddings, search, verify relevance
   Module: Semantic search (hides embedding generation + vector search)
   Time: 60min
+
+  Work Log:
+  - Created semanticSearch action in convex/actions/search.ts
+  - Generates embedding for search query using OpenAI (with retry)
+  - Performs vector search on embeddings table
+  - Added hydrateSearchResults internal query for auth filtering
+  - Security: only returns questions owned by current user
+  - Deep module: simple query string in, relevant questions out
+  - Hides: embedding generation, vector search, auth filtering
   ```
 
 - [ ] **Implement getRelatedQuestions action**
