@@ -216,7 +216,7 @@
 
 ### AI Layer (Actions)
 
-- [ ] **Install OpenAI SDK and configure**
+- [x] **Install OpenAI SDK and configure**
   ```
   Files: package.json, .env.local, convex/lib/openai.ts
   Commands: pnpm add openai
@@ -226,6 +226,13 @@
   Test: Manual - import in action, verify no runtime errors
   Module: OpenAI client singleton
   Time: 10min
+
+  Work Log:
+  - Installed openai package
+  - Created singleton client in convex/lib/openai.ts
+  - Exported constants: EMBEDDING_MODEL, EMBEDDING_DIMENSIONS
+  - Deep module: simple exports hide OpenAI SDK initialization
+  - NOTE: OPENAI_API_KEY must be set in Convex dashboard env vars
   ```
 
 - [ ] **Implement generateEmbedding action**
