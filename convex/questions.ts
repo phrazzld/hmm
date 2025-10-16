@@ -1,4 +1,5 @@
-import { mutation, query } from "./_generated/server";
+import { mutation, query, internalQuery } from "./_generated/server";
+import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { requireAuth } from "./lib/auth";
 
@@ -21,8 +22,11 @@ export const createQuestion = mutation({
     });
 
     // Schedule embedding generation (non-blocking)
-    // TODO: Implement generateEmbedding action
-    // await ctx.scheduler.runAfter(0, internal.actions.generateEmbedding, { questionId });
+    await ctx.scheduler.runAfter(
+      0,
+      internal.actions.embeddings.generateEmbedding,
+      { questionId }
+    );
 
     return questionId;
   },
@@ -89,6 +93,21 @@ export const getQuestion = query({
       throw new Error("Not authorized to access this question");
     }
 
+    return question;
+  },
+});
+
+/**
+ * Get a question by ID (internal only).
+ * No auth check - for use in actions.
+ */
+export const getById = internalQuery({
+  args: { questionId: v.id("questions") },
+  handler: async (ctx, args) => {
+    const question = await ctx.db.get(args.questionId);
+    if (!question) {
+      throw new Error("Question not found");
+    }
     return question;
   },
 });

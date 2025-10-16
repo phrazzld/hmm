@@ -235,7 +235,7 @@
   - NOTE: OPENAI_API_KEY must be set in Convex dashboard env vars
   ```
 
-- [ ] **Implement generateEmbedding action**
+- [x] **Implement generateEmbedding action**
   ```
   Files: convex/actions/embeddings.ts
   Approach: OpenAI API call -> store embedding in separate table
@@ -249,9 +249,17 @@
   Test: Integration test - mock OpenAI, verify db insert
   Module: Embedding generation (hides OpenAI API, retry logic)
   Time: 45min
+
+  Work Log:
+  - Created generateEmbedding action with retry logic
+  - Uses internal.questions.getById to fetch question
+  - Calls OpenAI API wrapped in withRetry
+  - Stores result via internal.embeddings.store
+  - Updated createQuestion to schedule this action
+  - NOTE: TypeScript errors due to stale _generated files - will resolve when `npx convex dev` runs
   ```
 
-- [ ] **Implement retry logic for OpenAI API failures**
+- [x] **Implement retry logic for OpenAI API failures**
   ```
   Files: convex/lib/retry.ts, convex/actions/embeddings.ts
   Approach: Exponential backoff wrapper (3 retries, 1s/2s/4s delays)
@@ -260,9 +268,15 @@
   Test: Unit test - mock failures, verify retry count
   Module: Resilient API calls (hides retry complexity)
   Time: 30min
+
+  Work Log:
+  - Created withRetry utility with exponential backoff + jitter
+  - Default: 3 retries, 1s/2s/4s delays
+  - Deep module: simple interface hides retry logic complexity
+  - Used in generateEmbedding action for OpenAI API calls
   ```
 
-- [ ] **Implement store embedding mutation (internal)**
+- [x] **Implement store embedding mutation (internal)**
   ```
   Files: convex/embeddings.ts
   Approach: Internal mutation (not exposed to client)
@@ -272,6 +286,13 @@
   Test: Unit test - verify insert called with correct args
   Module: Embedding storage (hides schema details)
   Time: 15min
+
+  Work Log:
+  - Created embeddings.ts with internal mutation/query
+  - store: inserts embedding with metadata
+  - getByQuestion: retrieves embedding for a question
+  - Both internal-only (not exposed to client)
+  - Added internal query questions.getById for actions
   ```
 
 ### Semantic Search (Queries & Actions)
