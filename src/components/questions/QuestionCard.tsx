@@ -4,27 +4,26 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { formatRelativeDate, truncateText } from "@/lib/date";
+import { RelatedQuestions } from "./RelatedQuestions";
 import type { Doc } from "@/../convex/_generated/dataModel";
 
 interface QuestionCardProps {
   question: Doc<"questions">;
-  onViewRelated?: () => void;
-  relatedCount?: number;
+  showRelated?: boolean;
 }
 
 /**
  * Question card component.
- * Displays question text, creation date, and optional related questions badge.
+ * Displays question text, creation date, and collapsible related questions.
  */
 export function QuestionCard({
   question,
-  onViewRelated,
-  relatedCount,
+  showRelated = true,
 }: QuestionCardProps) {
   const displayText = truncateText(question.text, 200);
   const relativeDate = formatRelativeDate(question.createdAt);
@@ -32,24 +31,18 @@ export function QuestionCard({
   return (
     <Card className="w-full transition-shadow hover:shadow-md">
       <CardHeader>
-        <div className="flex justify-between items-start gap-4">
-          <CardTitle className="text-base font-normal leading-relaxed">
-            {displayText}
-          </CardTitle>
-          {relatedCount !== undefined && relatedCount > 0 && (
-            <Badge
-              variant="secondary"
-              className="cursor-pointer shrink-0"
-              onClick={onViewRelated}
-            >
-              Related ({relatedCount})
-            </Badge>
-          )}
-        </div>
+        <CardTitle className="text-base font-normal leading-relaxed">
+          {displayText}
+        </CardTitle>
         <CardDescription className="text-xs">
           {relativeDate}
         </CardDescription>
       </CardHeader>
+      {showRelated && (
+        <CardFooter className="pt-0">
+          <RelatedQuestions questionId={question._id} />
+        </CardFooter>
+      )}
     </Card>
   );
 }
