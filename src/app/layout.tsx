@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { GeistSans } from "geist/font/sans";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { ConvexClientProvider } from "@/components/providers/ConvexClientProvider";
@@ -23,14 +24,28 @@ export default function RootLayout({
         <ConvexClientProvider>
           <header className="border-b">
             <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-              <h1 className="text-2xl font-bold">hmm</h1>
-              <nav className="flex items-center gap-4">
+              <Link href="/" className="text-2xl font-bold hover:opacity-80">
+                hmm
+              </Link>
+              <nav className="flex items-center gap-6">
+                <SignedIn>
+                  <Link
+                    href="/"
+                    className="text-sm text-gray-600 hover:text-gray-900"
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    href="/search"
+                    className="text-sm text-gray-600 hover:text-gray-900"
+                  >
+                    Search
+                  </Link>
+                  <UserButton />
+                </SignedIn>
                 <SignedOut>
                   <SignInButton />
                 </SignedOut>
-                <SignedIn>
-                  <UserButton />
-                </SignedIn>
               </nav>
             </div>
           </header>
