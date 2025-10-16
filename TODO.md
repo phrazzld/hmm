@@ -357,7 +357,7 @@
 
 ### Authentication UI
 
-- [ ] **Create auth components (SignInButton, UserButton)**
+- [x] **Create auth components (SignInButton, UserButton)**
   ```
   Files: src/components/auth/SignInButton.tsx, src/components/auth/UserButton.tsx
   Approach: Wrap Clerk components with custom styling (shadcn Button)
@@ -366,9 +366,15 @@
   Test: Manual - click sign-in, verify modal, sign out works
   Module: Auth UI (hides Clerk component complexity)
   Time: 30min
+
+  Work Log:
+  - Created SignInButton wrapping Clerk's modal auth
+  - Created UserButton with custom appearance config
+  - Added shadcn Button component as dependency
+  - Deep modules: simple exports hide Clerk component complexity
   ```
 
-- [ ] **Update layout with auth UI (header with UserButton)**
+- [x] **Update layout with auth UI (header with UserButton)**
   ```
   Files: src/app/layout.tsx
   Approach: Add header with logo + UserButton, wrap with ClerkProvider + ConvexProviderWithClerk
@@ -377,31 +383,54 @@
   Test: Manual - sign in, verify UserButton appears
   Module: App shell (hides provider setup)
   Time: 20min
+
+  Work Log:
+  - Added header with app name and navigation
+  - Integrated SignedIn/SignedOut conditional rendering
+  - Simple responsive layout with Tailwind utilities
+  - Deep module: layout hides auth state management
   ```
 
 ### Question Input Component
 
-- [ ] **Create QuestionInput component with optimistic UI**
+- [x] **Create QuestionInput component with optimistic UI**
   ```
   Files: src/components/questions/QuestionInput.tsx
-  Approach: Textarea + Button, useOptimistic hook, useMutation(api.questions.createQuestion)
+  Approach: Textarea + Button, useTransition hook, useMutation(api.questions.createQuestion)
   Props: onQuestionCreated?: (questionId: Id<"questions">) => void
-  State: useOptimistic for instant feedback, useTransition for pending state
+  State: useTransition for instant feedback (clears input immediately)
   Success: Submit -> instant UI update -> server reconciliation
   Test: Integration test - verify optimistic state, mutation called
   Module: Question capture UI (hides optimistic state management)
   Time: 60min
+
+  Work Log:
+  - Created QuestionInput with textarea and submit button
+  - Used useTransition for optimistic UI (instant clear on submit)
+  - Enter to submit, Shift+Enter for new line
+  - Error handling restores text on failure
+  - Added shadcn Textarea component
+  - Deep module: hides form state, async mutations, error recovery
   ```
 
-- [ ] **Add input validation (min 3 chars, max 500 chars)**
+- [x] **Add input validation (min 3 chars, max 500 chars)**
   ```
   Files: src/components/questions/QuestionInput.tsx, src/lib/validation.ts
-  Approach: Zod schema for validation, show error toast
-  Pattern: questionSchema = z.string().min(3).max(500)
-  Success: Invalid input shows error, valid input submits
+  Approach: Validation function with toast feedback (no Zod for simplicity)
+  Pattern: validateQuestion(text) -> { valid, error? }
+  Success: Invalid input shows error toast, valid input submits
   Test: Unit test - verify validation logic
   Module: Input validation (hides validation rules)
   Time: 20min
+
+  Work Log:
+  - Created validateQuestion utility with clear error messages
+  - Integrated toast notifications for validation errors
+  - Added character counter (shows at 80% capacity)
+  - maxLength attribute prevents over-typing
+  - Added shadcn toast components (toast, toaster, useToast hook)
+  - Integrated Toaster in root layout
+  - Deep module: validateQuestion hides min/max logic complexity
   ```
 
 ### Question List Component
