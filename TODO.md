@@ -649,29 +649,43 @@
 
 ### Error Handling & Loading States
 
-- [ ] **Add error boundaries to pages**
+- [x] **Add error boundaries to pages**
   ```
-  Files: src/app/error.tsx, src/app/questions/[id]/error.tsx
+  Files: src/app/error.tsx, src/app/search/error.tsx
   Approach: Next.js error boundary pattern
   UI: Show error message + "Try again" button
   Success: Errors caught, user can retry
   Test: Manual - simulate error, verify boundary catches
   Module: Error boundaries (hides error state management)
   Time: 30min
+
+  Work Log:
+  - Created root error.tsx with Card layout
+  - Created search/error.tsx for search-specific errors
+  - Both show error message + Try again + Go home buttons
+  - Log errors to console for debugging
+  - Next.js automatically catches errors in these boundaries
   ```
 
-- [ ] **Add loading states to pages**
+- [x] **Add loading states to pages**
   ```
-  Files: src/app/loading.tsx, src/app/questions/[id]/loading.tsx, src/app/search/loading.tsx
+  Files: src/app/loading.tsx, src/app/search/loading.tsx
   Approach: Next.js loading.tsx pattern with shadcn Skeleton
   UI: Skeleton components matching content layout
   Success: Loading states show during navigation
   Test: Manual - throttle network, verify skeletons appear
   Module: Loading states (hides suspense boundaries)
   Time: 30min
+
+  Work Log:
+  - Added Skeleton component from shadcn MCP
+  - Created loading.tsx matching home page layout
+  - Created search/loading.tsx matching search page layout
+  - Skeletons match actual content structure
+  - Next.js shows these automatically during navigation
   ```
 
-- [ ] **Add toast notifications for errors**
+- [x] **Add toast notifications for errors**
   ```
   Files: src/components/ui/toast.tsx (shadcn), src/hooks/useToast.ts
   Approach: shadcn toast component + hook
@@ -680,11 +694,17 @@
   Test: Manual - trigger error, verify toast appears
   Module: Error notifications (hides toast lifecycle)
   Time: 20min
+
+  Work Log:
+  - Already completed in earlier tasks (QuestionInput validation)
+  - Toast components added via shadcn
+  - Integrated into root layout
+  - Used in QuestionInput for validation/error feedback
   ```
 
 ### Environment & Config
 
-- [ ] **Create .env.example with all required vars**
+- [x] **Create .env.example with all required vars**
   ```
   Files: .env.example
   Approach: List all env vars with placeholder values
@@ -693,9 +713,14 @@
   Test: Manual - verify all vars listed
   Module: Environment documentation
   Time: 10min
+
+  Work Log:
+  - Already completed in earlier project setup
+  - All required env vars documented with comments
+  - Includes Convex, Clerk, and OpenAI configuration
   ```
 
-- [ ] **Configure next.config.ts for production**
+- [x] **Configure next.config.ts for production**
   ```
   Files: next.config.ts
   Approach: Enable strict mode, configure images domain if needed
@@ -704,6 +729,12 @@
   Test: pnpm build && pnpm start - verify works
   Module: Next.js configuration
   Time: 15min
+
+  Work Log:
+  - Already configured with reactStrictMode: true
+  - Minimal config (no unnecessary complexity)
+  - TypeScript configured with strict mode
+  - Note: Build requires npx convex dev to generate API types
   ```
 
 ### Deployment
