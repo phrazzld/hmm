@@ -444,7 +444,7 @@
 
 ### Question List Component
 
-- [ ] **Create QuestionCard component**
+- [x] **Create QuestionCard component**
   ```
   Files: src/components/questions/QuestionCard.tsx
   Approach: shadcn Card with text, date, "Related (N)" badge
@@ -454,9 +454,17 @@
   Test: Storybook or manual - render with sample data
   Module: Question display (hides date formatting, truncation)
   Time: 30min
+
+  Work Log:
+  - Used shadcn MCP to add Card and Badge components
+  - Created formatRelativeDate utility (just now, X mins/hours/days ago)
+  - Created truncateText utility (200 char limit with ellipsis)
+  - Card shows question text, relative date, optional Related badge
+  - Added hover shadow for interaction feedback
+  - Deep module: hides date formatting and text truncation complexity
   ```
 
-- [ ] **Create QuestionList component with real-time subscription**
+- [x] **Create QuestionList component with real-time subscription**
   ```
   Files: src/components/questions/QuestionList.tsx
   Approach: useQuery(api.questions.getQuestions), map to QuestionCard
@@ -466,6 +474,14 @@
   Test: Integration test - add question, verify list updates
   Module: Question list (hides subscription complexity)
   Time: 30min
+
+  Work Log:
+  - Used Convex useQuery for real-time subscription
+  - Loading state: 3 skeleton card loaders
+  - Empty state: helpful message ("Ask your first question")
+  - Maps questions to QuestionCard components
+  - Automatically updates when questions added (Convex handles it)
+  - Deep module: hides subscription, loading, empty state complexity
   ```
 
 - [ ] **Add infinite scroll / pagination to QuestionList**
