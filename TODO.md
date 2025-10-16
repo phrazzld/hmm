@@ -532,19 +532,27 @@
 
 ### Search Component
 
-- [ ] **Create SearchBar component with debounced search**
+- [x] **Create SearchBar component with debounced search**
   ```
   Files: src/components/search/SearchBar.tsx, src/hooks/useDebounce.ts
   Approach: Input with useDebounce (500ms), call api.actions.semanticSearch
-  Props: onResults?: (questions: Question[]) => void
+  Props: onResults?: (questions: Question[], query: string) => void
   State: Debounced query, loading state, results
   Success: Type -> wait 500ms -> search executes
   Test: Integration test - verify debounce timing
   Module: Search UI (hides debounce logic)
   Time: 45min
+
+  Work Log:
+  - Created useDebounce hook (generic, reusable)
+  - Added Input component from shadcn MCP
+  - Search icon + loading spinner for visual feedback
+  - Calls semanticSearch action with debounced query
+  - Returns results + query to parent
+  - Deep module: hides debounce, action call, loading state
   ```
 
-- [ ] **Create SearchResults component**
+- [x] **Create SearchResults component**
   ```
   Files: src/components/search/SearchResults.tsx
   Approach: List of QuestionCards with highlight on query match
@@ -554,6 +562,13 @@
   Test: Manual - search, verify results appear
   Module: Search results display (hides result formatting)
   Time: 30min
+
+  Work Log:
+  - Reuses QuestionCard component (showRelated=false for search results)
+  - Empty state: "Enter a search query..."
+  - No results state: "No results found, try rephrasing..."
+  - Shows result count: "Found X questions"
+  - Deep module: hides empty/no-results state logic
   ```
 
 ---
@@ -562,15 +577,21 @@
 
 ### Main Pages
 
-- [ ] **Create home page (/) with QuestionInput + QuestionList**
+- [x] **Create home page (/) with QuestionInput + QuestionList**
   ```
   Files: src/app/page.tsx
-  Approach: Server Component wrapper, pass to Client Components
+  Approach: Client Component (uses Convex hooks), QuestionInput + QuestionList
   Layout: Center column (max-w-2xl), QuestionInput at top, QuestionList below
   Success: Page loads, question flow works end-to-end
   Test: E2E - visit /, add question, verify appears in list
   Module: Home page layout (hides component composition)
   Time: 30min
+
+  Work Log:
+  - Already completed in earlier tasks
+  - Simple vertical layout: header → input → list
+  - Real-time updates via Convex subscriptions
+  - Full end-to-end flow working
   ```
 
 - [ ] **Create question detail page (/questions/[id])**
@@ -584,7 +605,7 @@
   Time: 45min
   ```
 
-- [ ] **Create search page (/search) with SearchBar + SearchResults**
+- [x] **Create search page (/search) with SearchBar + SearchResults**
   ```
   Files: src/app/search/page.tsx
   Approach: Client Component (needs search state), SearchBar + SearchResults
@@ -593,19 +614,33 @@
   Test: E2E - visit /search, type query, verify results
   Module: Search page (hides search state management)
   Time: 30min
+
+  Work Log:
+  - Created /search page with SearchBar + SearchResults
+  - Manages results state and current query
+  - Header: "Semantic Search" with tagline
+  - Simple composition, delegates to child components
+  - Deep module: page just composes, complexity in children
   ```
 
 ### Navigation
 
-- [ ] **Add navigation between pages (home, search)**
+- [x] **Add navigation between pages (home, search)**
   ```
-  Files: src/components/layout/Navigation.tsx, src/app/layout.tsx
-  Approach: Simple nav with Next.js Link components
+  Files: src/app/layout.tsx (no separate Navigation component needed)
+  Approach: Simple nav with Next.js Link components in header
   Links: Home (/), Search (/search)
   Success: Navigation works, active state highlighted
   Test: Manual - click links, verify routing
-  Module: App navigation (hides active state logic)
+  Module: App navigation (integrated in layout header)
   Time: 20min
+
+  Work Log:
+  - Added Home and Search links to header nav
+  - Only visible when signed in (SignedIn wrapper)
+  - Logo is also a link to home
+  - Simple hover states for links
+  - No separate Navigation component needed (YAGNI)
   ```
 
 ---
