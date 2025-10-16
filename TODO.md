@@ -124,7 +124,7 @@
   - TypeScript compiles without errors
   ```
 
-- [ ] **Create Convex auth helper (getUserIdentity wrapper)**
+- [x] **Create Convex auth helper (getUserIdentity wrapper)**
   ```
   Files: convex/lib/auth.ts
   Approach: Extract pattern from chrondle - helper to get/create user from ctx.auth
@@ -133,6 +133,14 @@
   Test: Unit test - mock ctx.auth, verify userId returned
   Module: Auth utilities (hides Clerk identity complexity)
   Time: 20min
+
+  Work Log:
+  - Created requireAuth(ctx: MutationCtx) for mutations (creates user if needed)
+  - Created requireAuthClerkId(ctx) for queries (returns Clerk ID)
+  - Separate functions needed because queries can't insert (read-only)
+  - Both functions throw if user not authenticated
+  - TypeScript compiles without errors
+  - Deep module: simple interface (requireAuth) hides Clerk JWT parsing + user creation
   ```
 
 ---
