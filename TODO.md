@@ -497,7 +497,7 @@
 
 ### Related Questions Component
 
-- [ ] **Create RelatedQuestions component with progressive disclosure**
+- [x] **Create RelatedQuestions component with progressive disclosure**
   ```
   Files: src/components/questions/RelatedQuestions.tsx
   Approach: Collapsible section (shadcn Collapsible), calls api.actions.getRelatedQuestions
@@ -507,6 +507,16 @@
   Test: Integration test - verify lazy loading
   Module: Related questions UI (hides action call, loading state)
   Time: 45min
+
+  Work Log:
+  - Used shadcn MCP to add Collapsible component
+  - Implemented lazy loading: only fetches on first expand
+  - Collapsed by default (progressive disclosure)
+  - Loading state: skeleton loaders (3 cards)
+  - Empty state: "No related questions found yet"
+  - Integrated into QuestionCard footer
+  - Uses ChevronDown/Up icons for visual feedback
+  - Deep module: hides action call, state management, collapse logic
   ```
 
 - [ ] **Add similarity score display (optional, show if <0.7)**
