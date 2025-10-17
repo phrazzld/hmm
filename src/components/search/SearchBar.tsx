@@ -6,16 +6,10 @@ import { Search, Loader2 } from "lucide-react";
 import { api } from "@/../convex/_generated/api";
 import { Input } from "@/components/ui/input";
 import { useDebounce } from "@/hooks/useDebounce";
-import type { Id } from "@/../convex/_generated/dataModel";
+import type { Doc } from "@/../convex/_generated/dataModel";
 
 interface SearchResult {
-  question: {
-    _id: Id<"questions">;
-    text: string;
-    createdAt: number;
-    userId: Id<"users">;
-    updatedAt: number;
-  };
+  question: Doc<"questions">;
 }
 
 interface SearchBarProps {

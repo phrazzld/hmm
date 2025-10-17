@@ -1,14 +1,17 @@
-import { action } from "../_generated/server";
+"use node";
+
+import { internalAction } from "../_generated/server";
 import { internal } from "../_generated/api";
 import { v } from "convex/values";
-import { openai, EMBEDDING_MODEL } from "../lib/openai";
+import { getOpenAIClient, EMBEDDING_MODEL } from "../lib/openai";
 import { withRetry } from "../lib/retry";
 
 /**
  * Generate an embedding for a question.
  * Called from createQuestion mutation via scheduler.
+ * Internal-only: cannot be called directly from client.
  */
-export const generateEmbedding = action({
+export const generateEmbedding = internalAction({
   args: { questionId: v.id("questions") },
   handler: async (ctx, args) => {
     // Get the question text
@@ -17,6 +20,7 @@ export const generateEmbedding = action({
     });
 
     // Generate embedding with retry logic
+    const openai = getOpenAIClient();
     const embedding = await withRetry(async () => {
       const response = await openai.embeddings.create({
         model: EMBEDDING_MODEL,

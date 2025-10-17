@@ -1,16 +1,10 @@
 "use client";
 
 import { QuestionCard } from "@/components/questions/QuestionCard";
-import type { Id } from "@/../convex/_generated/dataModel";
+import type { Doc } from "@/../convex/_generated/dataModel";
 
 interface SearchResult {
-  question: {
-    _id: Id<"questions">;
-    text: string;
-    createdAt: number;
-    userId: Id<"users">;
-    updatedAt: number;
-  };
+  question: Doc<"questions">;
 }
 
 interface SearchResultsProps {

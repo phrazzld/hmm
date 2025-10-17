@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { formatRelativeDate, truncateText } from "@/lib/date";
-import type { Id } from "@/../convex/_generated/dataModel";
+import type { Id, Doc } from "@/../convex/_generated/dataModel";
 
 interface RelatedQuestionsProps {
   questionId: Id<"questions">;
@@ -29,9 +29,9 @@ export function RelatedQuestions({
   const [isOpen, setIsOpen] = useState(false);
   const [hasFetched, setHasFetched] = useState(false);
   const getRelated = useAction(api.actions.search.getRelatedQuestions);
-  const [related, setRelated] = useState<
-    Array<{ question: { _id: Id<"questions">; text: string; createdAt: number } }>
-  >([]);
+  const [related, setRelated] = useState<Array<{ question: Doc<"questions"> }>>(
+    []
+  );
   const [isLoading, setIsLoading] = useState(false);
 
   const handleToggle = async (open: boolean) => {

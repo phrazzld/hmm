@@ -22,9 +22,13 @@ export const createQuestion = mutation({
     });
 
     // Schedule embedding generation (non-blocking)
+    // FIXME: Type assertion workaround for nested action directories
+    // Convex hasn't regenerated types for actions/* yet, so we use `as any` to access
+    // the nested module. This is safe at runtime but bypasses TypeScript checking.
+    // Will be resolved automatically when Convex regenerates types after next deploy.
     await ctx.scheduler.runAfter(
       0,
-      internal.actions.embeddings.generateEmbedding,
+      (internal as any)["actions/embeddings"].generateEmbedding,
       { questionId }
     );
 
@@ -35,13 +39,17 @@ export const createQuestion = mutation({
 /**
  * Get all questions for the current user.
  * Returns most recent questions first.
+ * Returns empty array if user is not authenticated.
  */
 export const getQuestions = query({
   args: { limit: v.optional(v.number()) },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
+
+    // Return empty array instead of throwing - allows graceful degradation
+    // UI should use <Authenticated> guards, but this prevents errors during auth transitions
     if (!identity) {
-      throw new Error("Unauthenticated");
+      return [];
     }
 
     // Find user by Clerk ID

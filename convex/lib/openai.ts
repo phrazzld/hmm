@@ -1,12 +1,28 @@
 import OpenAI from "openai";
 
+let openaiSingleton: OpenAI | null = null;
+
 /**
- * Singleton OpenAI client.
- * Configured with API key from Convex environment variables.
+ * Lazily instantiate the OpenAI client.
+ * Ensures Convex deploys even if the env var is not present locally,
+ * while still surfacing a helpful error at runtime.
  */
-export const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+export function getOpenAIClient(): OpenAI {
+  if (openaiSingleton) {
+    return openaiSingleton;
+  }
+
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error(
+      "OPENAI_API_KEY is not configured in the Convex environment. " +
+        "Set it via `npx convex env set <deployment> OPENAI_API_KEY <value>`."
+    );
+  }
+
+  openaiSingleton = new OpenAI({ apiKey });
+  return openaiSingleton;
+}
 
 /**
  * Model configuration for embeddings.
