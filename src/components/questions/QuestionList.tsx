@@ -1,24 +1,29 @@
 "use client";
 
-import { useQuery } from "convex/react";
+import { usePaginatedQuery } from "convex/react";
 import { motion } from "framer-motion";
 import { api } from "@/../convex/_generated/api";
 import { QuestionCard } from "./QuestionCard";
-import { Sprout } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sprout, Loader2 } from "lucide-react";
 
 interface QuestionListProps {
-  limit?: number;
+  initialPageSize?: number;
 }
 
 /**
- * Question list with smooth animations.
+ * Question list with smooth animations and pagination.
  * Displays user's questions.
  */
-export function QuestionList({ limit }: QuestionListProps) {
-  const questions = useQuery(api.questions.getQuestions, { limit });
+export function QuestionList({ initialPageSize = 20 }: QuestionListProps) {
+  const { results, status, loadMore } = usePaginatedQuery(
+    api.questions.getQuestions,
+    {},
+    { initialNumItems: initialPageSize }
+  );
 
-  if (questions === undefined) {
-    // Loading state
+  // Loading initial page
+  if (status === "LoadingFirstPage") {
     return (
       <div className="space-y-4">
         {[...Array(3)].map((_, i) => (
@@ -34,8 +39,8 @@ export function QuestionList({ limit }: QuestionListProps) {
     );
   }
 
-  if (questions.length === 0) {
-    // Empty state
+  // Empty state
+  if (results.length === 0) {
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -59,13 +64,41 @@ export function QuestionList({ limit }: QuestionListProps) {
 
   return (
     <div className="space-y-6">
-      {questions.map((question, index) => (
+      {/* Question cards */}
+      {results.map((question, index) => (
         <QuestionCard
           key={question._id}
           question={question}
           index={index}
         />
       ))}
+
+      {/* Load More button */}
+      {status === "CanLoadMore" && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex justify-center pt-4"
+        >
+          <Button
+            onClick={() => loadMore(20)}
+            variant="outline"
+            className="w-full max-w-xs"
+          >
+            Load more questions
+          </Button>
+        </motion.div>
+      )}
+
+      {/* Loading more state */}
+      {status === "LoadingMore" && (
+        <div className="flex justify-center py-4">
+          <div className="flex items-center gap-2 text-text-secondary">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span className="text-sm">Loading more...</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

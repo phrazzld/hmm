@@ -29,7 +29,7 @@ export function RelatedQuestions({
   const [isOpen, setIsOpen] = useState(false);
   const [hasFetched, setHasFetched] = useState(false);
   const getRelated = useAction(api.actions.search.getRelatedQuestions);
-  const [related, setRelated] = useState<Array<{ question: Doc<"questions"> }>>(
+  const [related, setRelated] = useState<Array<{ question: Doc<"questions">; score: number }>>(
     []
   );
   const [isLoading, setIsLoading] = useState(false);
@@ -58,7 +58,7 @@ export function RelatedQuestions({
         <Button
           variant="ghost"
           size="sm"
-          className="flex items-center gap-2 text-xs text-gray-600 hover:text-gray-900"
+          className="flex items-center gap-2 text-xs text-text-secondary hover:text-text-primary transition-colors"
         >
           {isOpen ? (
             <ChevronUp className="h-3 w-3" />
@@ -74,29 +74,47 @@ export function RelatedQuestions({
             {[...Array(3)].map((_, i) => (
               <div
                 key={i}
-                className="h-16 bg-gray-100 rounded animate-pulse"
+                className="h-16 bg-bg-muted rounded-garden-sm animate-pulse border border-border-subtle"
               />
             ))}
           </div>
         ) : related.length === 0 ? (
-          <p className="text-xs text-gray-500 italic">
+          <p className="text-xs text-text-tertiary italic">
             No related questions found yet.
           </p>
         ) : (
-          <div className="space-y-2 pl-4 border-l-2 border-gray-200">
-            {related.map(({ question }) => (
-              <div
-                key={question._id}
-                className="text-sm p-2 rounded hover:bg-gray-50 cursor-pointer"
-              >
-                <p className="text-gray-800">
-                  {truncateText(question.text, 120)}
-                </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  {formatRelativeDate(question.createdAt)}
-                </p>
-              </div>
-            ))}
+          <div className="space-y-2 pl-4">
+            {related.map(({ question, score }) => {
+              const scorePercentage = Math.round(score * 100);
+              const isWeaklyRelated = score < 0.5;
+
+              return (
+                <div
+                  key={question._id}
+                  className="text-sm p-2 rounded-garden-sm hover:bg-bg-subtle cursor-pointer transition-colors"
+                  title={`${scorePercentage}% similar`}
+                >
+                  <p className="text-text-emphasis leading-relaxed">
+                    {truncateText(question.text, 120)}
+                  </p>
+                  <div className="flex items-center justify-between mt-1">
+                    <div className="flex items-center gap-2">
+                      <p className="text-xs text-text-tertiary">
+                        {formatRelativeDate(question.createdAt)}
+                      </p>
+                      {isWeaklyRelated && (
+                        <span className="text-xs text-text-tertiary italic">
+                          · loosely related
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-xs font-medium text-text-secondary">
+                      {scorePercentage}%
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </CollapsibleContent>

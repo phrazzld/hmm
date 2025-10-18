@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useAction } from "convex/react";
-import { Search, Loader2 } from "lucide-react";
+import { Search } from "lucide-react";
 import { api } from "@/../convex/_generated/api";
 import { Input } from "@/components/ui/input";
 import { useDebounce } from "@/hooks/useDebounce";
+import { cn } from "@/lib/utils";
 import type { Doc } from "@/../convex/_generated/dataModel";
 
 interface SearchResult {
@@ -14,6 +15,7 @@ interface SearchResult {
 
 interface SearchBarProps {
   onResults?: (results: SearchResult[], query: string) => void;
+  onLoadingChange?: (isLoading: boolean) => void;
   placeholder?: string;
 }
 
@@ -23,6 +25,7 @@ interface SearchBarProps {
  */
 export function SearchBar({
   onResults,
+  onLoadingChange,
   placeholder = "Search your questions...",
 }: SearchBarProps) {
   const [query, setQuery] = useState("");
@@ -34,12 +37,15 @@ export function SearchBar({
     // Don't search for empty queries
     if (!debouncedQuery.trim()) {
       onResults?.([], "");
+      setIsLoading(false);
+      onLoadingChange?.(false);
       return;
     }
 
     // Perform search
     const performSearch = async () => {
       setIsLoading(true);
+      onLoadingChange?.(true);
       try {
         const results = await semanticSearch({
           query: debouncedQuery,
@@ -51,25 +57,37 @@ export function SearchBar({
         onResults?.([], debouncedQuery);
       } finally {
         setIsLoading(false);
+        onLoadingChange?.(false);
       }
     };
 
     performSearch();
-  }, [debouncedQuery, semanticSearch, onResults]);
+  }, [debouncedQuery, semanticSearch, onResults, onLoadingChange]);
 
   return (
     <div className="relative">
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+      <Search
+        className={cn(
+          "absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors duration-200",
+          isLoading ? "text-interactive-primary" : "text-text-tertiary"
+        )}
+      />
       <Input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder={placeholder}
-        className="pl-10 pr-10"
+        className={cn(
+          "pl-10 transition-all duration-200",
+          isLoading && "border-interactive-primary ring-2 ring-interactive-primary/20 animate-[search-pulse_2s_ease-in-out_infinite]"
+        )}
       />
-      {isLoading && (
-        <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 animate-spin" />
-      )}
+      <style jsx>{`
+        @keyframes search-pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.85; }
+        }
+      `}</style>
     </div>
   );
 }

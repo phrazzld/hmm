@@ -9,16 +9,22 @@ import type { Doc } from "@/../convex/_generated/dataModel";
 
 interface SearchResult {
   question: Doc<"questions">;
+  score: number;
 }
 
 export default function SearchPage() {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [currentQuery, setCurrentQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   // Wrap in useCallback to prevent SearchBar useEffect infinite loop
   const handleResults = useCallback((newResults: SearchResult[], query: string) => {
     setResults(newResults);
     setCurrentQuery(query);
+  }, []);
+
+  const handleLoadingChange = useCallback((loading: boolean) => {
+    setIsLoading(loading);
   }, []);
 
   return (
@@ -27,7 +33,7 @@ export default function SearchPage() {
         {/* Header */}
         <div className="space-y-2">
           <h1 className="text-3xl font-bold">Semantic Search</h1>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-text-secondary">
             Search by meaning, not just keywords.
           </p>
         </div>
@@ -35,14 +41,14 @@ export default function SearchPage() {
         {/* Loading state while auth initializes */}
         <AuthLoading>
           <div className="text-center py-12">
-            <div className="animate-pulse text-gray-500">Loading...</div>
+            <div className="animate-pulse text-text-tertiary">Loading...</div>
           </div>
         </AuthLoading>
 
         {/* Unauthenticated state - show sign-in prompt */}
         <Unauthenticated>
           <div className="text-center py-12 space-y-6">
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-text-secondary">
               Sign in to search your questions.
             </p>
             <SignInButton />
@@ -51,10 +57,10 @@ export default function SearchPage() {
 
         {/* Authenticated state - show search interface */}
         <Authenticated>
-          <SearchBar onResults={handleResults} />
+          <SearchBar onResults={handleResults} onLoadingChange={handleLoadingChange} />
 
           <div className="mt-8">
-            <SearchResults results={results} query={currentQuery} />
+            <SearchResults results={results} query={currentQuery} isLoading={isLoading} />
           </div>
         </Authenticated>
       </div>

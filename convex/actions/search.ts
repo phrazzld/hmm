@@ -19,7 +19,7 @@ export const semanticSearch = action({
   handler: async (
     ctx,
     args
-  ): Promise<Array<{ question: Doc<"questions"> }>> => {
+  ): Promise<Array<{ question: Doc<"questions">; score: number }>> => {
     const limit = args.limit ?? 20;
 
     // Generate embedding for the search query
@@ -44,10 +44,16 @@ export const semanticSearch = action({
         limit,
       });
 
+    // Create score map for hydration
+    const scoreMap = new Map(
+      results.map((r) => [r._id.toString(), r._score])
+    );
+
     // Hydrate questions and filter by user
-    const searchResults: Array<{ question: Doc<"questions"> }> =
+    const searchResults: Array<{ question: Doc<"questions">; score: number }> =
       await ctx.runQuery(internal.questions.hydrateSearchResults, {
         embeddingIds: results.map((r) => r._id),
+        scoreMap: Object.fromEntries(scoreMap),
       });
 
     return searchResults;
@@ -66,7 +72,7 @@ export const getRelatedQuestions = action({
   handler: async (
     ctx,
     args
-  ): Promise<Array<{ question: Doc<"questions"> }>> => {
+  ): Promise<Array<{ question: Doc<"questions">; score: number }>> => {
     const limit = args.limit ?? 5;
 
     // Get the embedding for this question
@@ -89,16 +95,21 @@ export const getRelatedQuestions = action({
         limit: limit + 1, // +1 to account for self
       });
 
-    // Filter out the current question
-    const embeddingIds: Array<Id<"embeddings">> = results
-      .filter((r: { _id: Id<"embeddings">; _score: number }) => r._id !== embedding._id)
-      .slice(0, limit)
-      .map((r: { _id: Id<"embeddings">; _score: number }) => r._id);
+    // Filter out the current question and keep scores
+    const filteredResults = results
+      .filter((r) => r._id !== embedding._id)
+      .slice(0, limit);
+
+    // Create score map for hydration
+    const scoreMap = new Map(
+      filteredResults.map((r) => [r._id.toString(), r._score])
+    );
 
     // Hydrate and filter by user
-    const relatedQuestions: Array<{ question: Doc<"questions"> }> =
+    const relatedQuestions: Array<{ question: Doc<"questions">; score: number }> =
       await ctx.runQuery(internal.questions.hydrateSearchResults, {
-        embeddingIds,
+        embeddingIds: filteredResults.map((r) => r._id),
+        scoreMap: Object.fromEntries(scoreMap),
       });
 
     return relatedQuestions;

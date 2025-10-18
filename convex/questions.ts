@@ -1,6 +1,7 @@
 import { mutation, query, internalQuery } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
+import { paginationOptsValidator } from "convex/server";
 import { requireAuth } from "./lib/auth";
 
 /**
@@ -37,19 +38,19 @@ export const createQuestion = mutation({
 });
 
 /**
- * Get all questions for the current user.
+ * Get all questions for the current user with pagination.
  * Returns most recent questions first.
- * Returns empty array if user is not authenticated.
+ * Returns empty page if user is not authenticated.
  */
 export const getQuestions = query({
-  args: { limit: v.optional(v.number()) },
+  args: { paginationOpts: paginationOptsValidator },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
 
-    // Return empty array instead of throwing - allows graceful degradation
+    // Return empty page instead of throwing - allows graceful degradation
     // UI should use <Authenticated> guards, but this prevents errors during auth transitions
     if (!identity) {
-      return [];
+      return { page: [], isDone: true, continueCursor: "" };
     }
 
     // Find user by Clerk ID
@@ -60,16 +61,14 @@ export const getQuestions = query({
 
     if (!user) {
       // User hasn't created any questions yet (no user record)
-      return [];
+      return { page: [], isDone: true, continueCursor: "" };
     }
-
-    const limit = args.limit ?? 50;
 
     return await ctx.db
       .query("questions")
       .withIndex("by_user_created", (q) => q.eq("userId", user._id))
       .order("desc")
-      .take(limit);
+      .paginate(args.paginationOpts);
   },
 });
 
@@ -123,10 +122,12 @@ export const getById = internalQuery({
 /**
  * Hydrate search results with question data (internal only).
  * Filters by current user for security.
+ * Returns questions with their similarity scores.
  */
 export const hydrateSearchResults = internalQuery({
   args: {
     embeddingIds: v.array(v.id("embeddings")),
+    scoreMap: v.optional(v.record(v.string(), v.number())),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -155,10 +156,10 @@ export const hydrateSearchResults = internalQuery({
 
       // Only return questions owned by the current user
       if (question.userId === user._id) {
+        const score = args.scoreMap?.[embeddingId.toString()] ?? 0;
         results.push({
           question,
-          // Note: similarity score comes from vector search but isn't available here
-          // Could be passed through embeddingIds if needed
+          score,
         });
       }
     }
