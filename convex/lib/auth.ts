@@ -8,9 +8,7 @@ import { Id } from "../_generated/dataModel";
  * @throws Error if user is not authenticated
  * @returns The user's Convex ID
  */
-export async function requireAuth(
-  ctx: MutationCtx
-): Promise<Id<"users">> {
+export async function requireAuth(ctx: MutationCtx): Promise<Id<"users">> {
   const identity = await ctx.auth.getUserIdentity();
 
   if (!identity) {
@@ -45,9 +43,9 @@ export async function requireAuth(
  * @throws Error if user is not authenticated
  * @returns The user's Clerk ID
  */
-export async function requireAuthClerkId(
-  ctx: { auth: { getUserIdentity: () => Promise<any> } }
-): Promise<string> {
+export async function requireAuthClerkId(ctx: {
+  auth: { getUserIdentity: () => Promise<any> };
+}): Promise<string> {
   const identity = await ctx.auth.getUserIdentity();
 
   if (!identity) {

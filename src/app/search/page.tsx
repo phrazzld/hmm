@@ -33,9 +33,7 @@ export default function SearchPage() {
         {/* Header */}
         <div className="space-y-2">
           <h1 className="text-3xl font-bold">Semantic Search</h1>
-          <p className="text-sm text-text-secondary">
-            Search by meaning, not just keywords.
-          </p>
+          <p className="text-sm text-text-secondary">Search by meaning, not just keywords.</p>
         </div>
 
         {/* Loading state while auth initializes */}
@@ -48,9 +46,7 @@ export default function SearchPage() {
         {/* Unauthenticated state - show sign-in prompt */}
         <Unauthenticated>
           <div className="text-center py-12 space-y-6">
-            <p className="text-lg text-text-secondary">
-              Sign in to search your questions.
-            </p>
+            <p className="text-lg text-text-secondary">Sign in to search your questions.</p>
             <SignInButton />
           </div>
         </Unauthenticated>

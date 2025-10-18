@@ -28,10 +28,7 @@ export async function withRetry<T>(
       }
 
       // Calculate exponential backoff with jitter
-      const delay = Math.min(
-        baseDelay * Math.pow(2, attempt) + Math.random() * 1000,
-        maxDelay
-      );
+      const delay = Math.min(baseDelay * Math.pow(2, attempt) + Math.random() * 1000, maxDelay);
 
       // Wait before retrying
       await new Promise((resolve) => setTimeout(resolve, delay));

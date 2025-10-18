@@ -4,11 +4,7 @@ import { useState } from "react";
 import { useAction } from "convex/react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { api } from "@/../convex/_generated/api";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { formatRelativeDate, truncateText } from "@/lib/date";
 import type { Id, Doc } from "@/../convex/_generated/dataModel";
@@ -22,16 +18,11 @@ interface RelatedQuestionsProps {
  * Related questions component with progressive disclosure.
  * Fetches related questions only when expanded (lazy loading).
  */
-export function RelatedQuestions({
-  questionId,
-  limit = 5,
-}: RelatedQuestionsProps) {
+export function RelatedQuestions({ questionId, limit = 5 }: RelatedQuestionsProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasFetched, setHasFetched] = useState(false);
   const getRelated = useAction(api.actions.search.getRelatedQuestions);
-  const [related, setRelated] = useState<Array<{ question: Doc<"questions">; score: number }>>(
-    []
-  );
+  const [related, setRelated] = useState<Array<{ question: Doc<"questions">; score: number }>>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleToggle = async (open: boolean) => {
@@ -60,11 +51,7 @@ export function RelatedQuestions({
           size="sm"
           className="flex items-center gap-2 text-xs text-text-secondary hover:text-text-primary transition-colors"
         >
-          {isOpen ? (
-            <ChevronUp className="h-3 w-3" />
-          ) : (
-            <ChevronDown className="h-3 w-3" />
-          )}
+          {isOpen ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
           <span>Related questions</span>
         </Button>
       </CollapsibleTrigger>
@@ -79,9 +66,7 @@ export function RelatedQuestions({
             ))}
           </div>
         ) : related.length === 0 ? (
-          <p className="text-xs text-text-tertiary italic">
-            No related questions found yet.
-          </p>
+          <p className="text-xs text-text-tertiary italic">No related questions found yet.</p>
         ) : (
           <div className="space-y-2 pl-4">
             {related.map(({ question, score }) => {
@@ -103,9 +88,7 @@ export function RelatedQuestions({
                         {formatRelativeDate(question.createdAt)}
                       </p>
                       {isWeaklyRelated && (
-                        <span className="text-xs text-text-tertiary italic">
-                          · loosely related
-                        </span>
+                        <span className="text-xs text-text-tertiary italic">· loosely related</span>
                       )}
                     </div>
                     <span className="text-xs font-medium text-text-secondary">

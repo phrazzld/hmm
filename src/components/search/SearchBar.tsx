@@ -80,13 +80,19 @@ export function SearchBar({
         placeholder={placeholder}
         className={cn(
           "pl-10 transition-all duration-200",
-          isLoading && "border-interactive-primary ring-2 ring-interactive-primary/20 animate-[search-pulse_2s_ease-in-out_infinite]"
+          isLoading &&
+            "border-interactive-primary ring-2 ring-interactive-primary/20 animate-[search-pulse_2s_ease-in-out_infinite]"
         )}
       />
       <style jsx>{`
         @keyframes search-pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.85; }
+          0%,
+          100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.85;
+          }
         }
       `}</style>
     </div>

@@ -373,21 +373,25 @@
 ## Prioritization Framework
 
 **High Priority (Do Next):**
+
 - Features that directly improve core value (semantic search quality, related questions UX)
 - Reliability improvements (error handling, retry logic)
 - Basic analytics (understand usage patterns)
 
 **Medium Priority (After Validation):**
+
 - Features that encourage deeper engagement (reflection prompts, threads)
 - UX polish (empty states, onboarding, keyboard shortcuts)
 - Developer experience (testing, CI/CD)
 
 **Low Priority (Future Vision):**
+
 - Features that require scale validation first (collaboration, public questions)
 - Advanced AI features (clustering, quality scoring)
 - Platform expansion (mobile app, browser extension)
 
 **Evaluate After 3 Months:**
+
 - Do users return weekly?
 - Are related questions explored?
 - Is semantic search providing value?

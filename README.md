@@ -58,6 +58,7 @@ pnpm dev
 ## environment setup
 
 **required services:**
+
 1. [convex](https://convex.dev) — backend + database + vector search
 2. [clerk](https://clerk.com) — authentication
 3. [openai](https://platform.openai.com) — embeddings api
@@ -101,16 +102,19 @@ pnpm build
 ## architecture highlights
 
 **data model:**
+
 - `users` — clerk integration
 - `questions` — your questions with timestamps
 - `embeddings` — 1536-dim vectors with vector index
 
 **key flows:**
+
 1. question created → embedding generated async → stored with vector index
 2. semantic search → query embedded → vector search → results ranked by similarity
 3. related questions → fetch question embedding → find similar → filter self
 
 **why this works:**
+
 - embeddings capture semantic meaning beyond keywords
 - vector search finds similarity in 1536-dimensional space
 - convex handles real-time updates and vector indexing

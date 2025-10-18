@@ -2,10 +2,7 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
 // Only protect specific routes that require authentication
 // Home (/) and search (/search) are public - users can view without signing in
-const isProtectedRoute = createRouteMatcher([
-  "/dashboard(.*)",
-  "/settings(.*)",
-]);
+const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/settings(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
   // Only enforce auth on protected routes

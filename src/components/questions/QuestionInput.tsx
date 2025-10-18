@@ -117,7 +117,15 @@ export function QuestionInput({ onQuestionCreated }: QuestionInputProps) {
       {/* Action bar */}
       <div className="flex justify-between items-center">
         <p className="text-xs text-text-tertiary font-medium">
-          Press <kbd className="px-1.5 py-0.5 rounded bg-bg-subtle text-text-primary font-mono text-xs">Enter</kbd> to save · <kbd className="px-1.5 py-0.5 rounded bg-bg-subtle text-text-primary font-mono text-xs">Shift + Enter</kbd> for new line
+          Press{" "}
+          <kbd className="px-1.5 py-0.5 rounded bg-bg-subtle text-text-primary font-mono text-xs">
+            Enter
+          </kbd>{" "}
+          to save ·{" "}
+          <kbd className="px-1.5 py-0.5 rounded bg-bg-subtle text-text-primary font-mono text-xs">
+            Shift + Enter
+          </kbd>{" "}
+          for new line
         </p>
 
         <motion.button
@@ -160,9 +168,7 @@ export function QuestionInput({ onQuestionCreated }: QuestionInputProps) {
               </motion.div>
             )}
           </AnimatePresence>
-          <span>
-            {isPending ? "Saving..." : showSuccess ? "Saved!" : "Save"}
-          </span>
+          <span>{isPending ? "Saving..." : showSuccess ? "Saved!" : "Save"}</span>
         </motion.button>
       </div>
     </form>

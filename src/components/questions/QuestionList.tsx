@@ -51,12 +51,8 @@ export function QuestionList({ initialPageSize = 20 }: QuestionListProps) {
           <Sprout className="w-8 h-8 text-text-secondary" />
         </div>
         <div className="space-y-2">
-          <p className="text-lg font-serif text-text-primary">
-            No questions yet
-          </p>
-          <p className="text-sm text-text-secondary">
-            Ask your first question above
-          </p>
+          <p className="text-lg font-serif text-text-primary">No questions yet</p>
+          <p className="text-sm text-text-secondary">Ask your first question above</p>
         </div>
       </motion.div>
     );
@@ -66,11 +62,7 @@ export function QuestionList({ initialPageSize = 20 }: QuestionListProps) {
     <div className="space-y-6">
       {/* Question cards */}
       {results.map((question, index) => (
-        <QuestionCard
-          key={question._id}
-          question={question}
-          index={index}
-        />
+        <QuestionCard key={question._id} question={question} index={index} />
       ))}
 
       {/* Load More button */}
@@ -80,11 +72,7 @@ export function QuestionList({ initialPageSize = 20 }: QuestionListProps) {
           animate={{ opacity: 1 }}
           className="flex justify-center pt-4"
         >
-          <Button
-            onClick={() => loadMore(20)}
-            variant="outline"
-            className="w-full max-w-xs"
-          >
+          <Button onClick={() => loadMore(20)} variant="outline" className="w-full max-w-xs">
             Load more questions
           </Button>
         </motion.div>

@@ -1,0 +1,21 @@
+# Lefthook configuration for hmm
+# Docs: https://lefthook.dev/configuration/
+
+pre-commit:
+  parallel: true
+  commands:
+    format:
+      glob: "*.{js,ts,jsx,tsx,json,md}"
+      run: pnpm prettier --write {staged_files}
+      stage_fixed: true
+
+    lint:
+      run: pnpm lint:fix
+
+pre-push:
+  commands:
+    type-check:
+      run: pnpm type-check
+
+    build-check:
+      run: pnpm build

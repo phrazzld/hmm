@@ -7,12 +7,14 @@
 **Patterns:** Following chrondle project structure (pnpm, src/app router, convex/, TypeScript strict)
 
 **Module Boundaries:**
+
 - **UI Layer:** React components (optimistic updates, progressive disclosure)
 - **API Layer:** Convex queries/mutations (auth validation, data access)
 - **Data Layer:** Convex schema (questions + embeddings tables, vector index)
 - **AI Layer:** Convex actions (OpenAI API calls, retry logic)
 
 **shadcn/ui MCP Guidelines:**
+
 - **ALWAYS** try shadcn MCP tools first before manual installation
 - Use `mcp__shadcn__search_items_in_registries` to find components
 - Use `mcp__shadcn__view_items_in_registries` to see component details
@@ -28,6 +30,7 @@
 ### Project Setup
 
 - [x] **Initialize Next.js 15 project with TypeScript**
+
   ```
   Files: package.json, tsconfig.json, next.config.ts, src/app/layout.tsx, src/app/page.tsx
   Approach: Use create-next-app with App Router, follow chrondle pnpm + TypeScript patterns
@@ -39,6 +42,7 @@
   ```
 
 - [x] **Configure TypeScript strict mode**
+
   ```
   Files: tsconfig.json
   Approach: Match chrondle strict settings (noUncheckedIndexedAccess, strictNullChecks)
@@ -49,6 +53,7 @@
   ```
 
 - [x] **Install and initialize Convex**
+
   ```
   Files: package.json, convex/, .env.local
   Commands: pnpm add convex, npx convex dev (creates convex/ directory)
@@ -66,6 +71,7 @@
   ```
 
 - [x] **Install shadcn/ui with components**
+
   ```
   Files: components.json, src/components/ui/*, tailwind.config.ts, src/lib/utils.ts
   Commands: npx shadcn@latest init, npx shadcn@latest add input button card textarea scroll-area badge
@@ -87,6 +93,7 @@
 ### Convex Schema & Auth
 
 - [x] **Define Convex schema (questions + embeddings tables)**
+
   ```
   Files: convex/schema.ts
   Approach: Follow chrondle pattern (defineSchema, defineTable, indexes)
@@ -112,6 +119,7 @@
   ```
 
 - [x] **Install and configure Clerk authentication**
+
   ```
   Files: package.json, .env.local, src/middleware.ts, src/app/layout.tsx, convex/auth.config.ts
   Commands: pnpm add @clerk/nextjs convex/react-clerk
@@ -134,6 +142,7 @@
   ```
 
 - [x] **Create Convex auth helper (getUserIdentity wrapper)**
+
   ```
   Files: convex/lib/auth.ts
   Approach: Extract pattern from chrondle - helper to get/create user from ctx.auth
@@ -159,6 +168,7 @@
 ### Question Capture (Mutations)
 
 - [x] **Implement createQuestion mutation**
+
   ```
   Files: convex/questions.ts
   Approach: Simple insert to questions table, schedule embedding action
@@ -182,6 +192,7 @@
   ```
 
 - [x] **Implement getQuestions query (paginated list)**
+
   ```
   Files: convex/questions.ts
   Approach: Query by userId, order by createdAt desc, take(50)
@@ -202,6 +213,7 @@
   ```
 
 - [x] **Implement getQuestion query (single question by ID)**
+
   ```
   Files: convex/questions.ts
   Approach: Get by ID, verify ownership
@@ -226,6 +238,7 @@
 ### AI Layer (Actions)
 
 - [x] **Install OpenAI SDK and configure**
+
   ```
   Files: package.json, .env.local, convex/lib/openai.ts
   Commands: pnpm add openai
@@ -245,6 +258,7 @@
   ```
 
 - [x] **Implement generateEmbedding action**
+
   ```
   Files: convex/actions/embeddings.ts
   Approach: OpenAI API call -> store embedding in separate table
@@ -269,6 +283,7 @@
   ```
 
 - [x] **Implement retry logic for OpenAI API failures**
+
   ```
   Files: convex/lib/retry.ts, convex/actions/embeddings.ts
   Approach: Exponential backoff wrapper (3 retries, 1s/2s/4s delays)
@@ -286,6 +301,7 @@
   ```
 
 - [x] **Implement store embedding mutation (internal)**
+
   ```
   Files: convex/embeddings.ts
   Approach: Internal mutation (not exposed to client)
@@ -307,6 +323,7 @@
 ### Semantic Search (Queries & Actions)
 
 - [x] **Implement semanticSearch action**
+
   ```
   Files: convex/actions/search.ts
   Approach: Generate query embedding -> vector search -> hydrate questions
@@ -334,6 +351,7 @@
   ```
 
 - [x] **Implement getRelatedQuestions action**
+
   ```
   Files: convex/actions/search.ts
   Approach: Get question's embedding -> vector search (exclude self)
@@ -367,6 +385,7 @@
 ### Authentication UI
 
 - [x] **Create auth components (SignInButton, UserButton)**
+
   ```
   Files: src/components/auth/SignInButton.tsx, src/components/auth/UserButton.tsx
   Approach: Wrap Clerk components with custom styling (shadcn Button)
@@ -384,6 +403,7 @@
   ```
 
 - [x] **Update layout with auth UI (header with UserButton)**
+
   ```
   Files: src/app/layout.tsx
   Approach: Add header with logo + UserButton, wrap with ClerkProvider + ConvexProviderWithClerk
@@ -403,6 +423,7 @@
 ### Question Input Component
 
 - [x] **Create QuestionInput component with optimistic UI**
+
   ```
   Files: src/components/questions/QuestionInput.tsx
   Approach: Textarea + Button, useTransition hook, useMutation(api.questions.createQuestion)
@@ -423,6 +444,7 @@
   ```
 
 - [x] **Add input validation (min 3 chars, max 500 chars)**
+
   ```
   Files: src/components/questions/QuestionInput.tsx, src/lib/validation.ts
   Approach: Validation function with toast feedback (no Zod for simplicity)
@@ -445,6 +467,7 @@
 ### Question List Component
 
 - [x] **Create QuestionCard component**
+
   ```
   Files: src/components/questions/QuestionCard.tsx
   Approach: shadcn Card with text, date, "Related (N)" badge
@@ -465,6 +488,7 @@
   ```
 
 - [x] **Create QuestionList component with real-time subscription**
+
   ```
   Files: src/components/questions/QuestionList.tsx
   Approach: useQuery(api.questions.getQuestions), map to QuestionCard
@@ -498,6 +522,7 @@
 ### Related Questions Component
 
 - [x] **Create RelatedQuestions component with progressive disclosure**
+
   ```
   Files: src/components/questions/RelatedQuestions.tsx
   Approach: Collapsible section (shadcn Collapsible), calls api.actions.getRelatedQuestions
@@ -533,6 +558,7 @@
 ### Search Component
 
 - [x] **Create SearchBar component with debounced search**
+
   ```
   Files: src/components/search/SearchBar.tsx, src/hooks/useDebounce.ts
   Approach: Input with useDebounce (500ms), call api.actions.semanticSearch
@@ -553,6 +579,7 @@
   ```
 
 - [x] **Create SearchResults component**
+
   ```
   Files: src/components/search/SearchResults.tsx
   Approach: List of QuestionCards with highlight on query match
@@ -578,6 +605,7 @@
 ### Main Pages
 
 - [x] **Create home page (/) with QuestionInput + QuestionList**
+
   ```
   Files: src/app/page.tsx
   Approach: Client Component (uses Convex hooks), QuestionInput + QuestionList
@@ -595,6 +623,7 @@
   ```
 
 - [ ] **Create question detail page (/questions/[id])**
+
   ```
   Files: src/app/questions/[id]/page.tsx
   Approach: Dynamic route, preloadQuery for SSR, show question + RelatedQuestions
@@ -606,6 +635,7 @@
   ```
 
 - [x] **Create search page (/search) with SearchBar + SearchResults**
+
   ```
   Files: src/app/search/page.tsx
   Approach: Client Component (needs search state), SearchBar + SearchResults
@@ -626,6 +656,7 @@
 ### Navigation
 
 - [x] **Add navigation between pages (home, search)**
+
   ```
   Files: src/app/layout.tsx (no separate Navigation component needed)
   Approach: Simple nav with Next.js Link components in header
@@ -650,6 +681,7 @@
 ### Error Handling & Loading States
 
 - [x] **Add error boundaries to pages**
+
   ```
   Files: src/app/error.tsx, src/app/search/error.tsx
   Approach: Next.js error boundary pattern
@@ -668,6 +700,7 @@
   ```
 
 - [x] **Add loading states to pages**
+
   ```
   Files: src/app/loading.tsx, src/app/search/loading.tsx
   Approach: Next.js loading.tsx pattern with shadcn Skeleton
@@ -686,6 +719,7 @@
   ```
 
 - [x] **Add toast notifications for errors**
+
   ```
   Files: src/components/ui/toast.tsx (shadcn), src/hooks/useToast.ts
   Approach: shadcn toast component + hook
@@ -705,6 +739,7 @@
 ### Environment & Config
 
 - [x] **Create .env.example with all required vars**
+
   ```
   Files: .env.example
   Approach: List all env vars with placeholder values
@@ -721,6 +756,7 @@
   ```
 
 - [x] **Configure next.config.ts for production**
+
   ```
   Files: next.config.ts
   Approach: Enable strict mode, configure images domain if needed
@@ -740,6 +776,7 @@
 ### Deployment
 
 - [ ] **Deploy Convex to production**
+
   ```
   Files: convex/, .env (Convex dashboard)
   Commands: npx convex deploy --prod
@@ -752,6 +789,7 @@
   ```
 
 - [ ] **Deploy Next.js to Vercel**
+
   ```
   Files: vercel.json (optional), .env (Vercel dashboard)
   Commands: vercel --prod or GitHub integration
@@ -784,16 +822,19 @@
 ## Design Iteration Points
 
 **After Core Data Flow (Phase 2):**
+
 - Review Convex function boundaries - are auth helpers sufficient?
 - Check embedding generation performance - is retry logic working?
 - Validate schema indexes - are queries efficient?
 
 **After UI Components (Phase 3):**
+
 - Review component composition - are props clean?
 - Check optimistic UI - does it feel instant?
 - Validate related questions UX - is progressive disclosure clear?
 
 **After Pages & Routing (Phase 4):**
+
 - Review navigation patterns - is routing intuitive?
 - Check SSR/CSR boundaries - are Server Components used effectively?
 - Validate search UX - is debouncing sufficient?
@@ -813,6 +854,7 @@
 ## Success Criteria
 
 ### MVP Complete When:
+
 - ✅ Can sign in with Clerk
 - ✅ Can create questions (optimistic UI)
 - ✅ Questions get embeddings (background)

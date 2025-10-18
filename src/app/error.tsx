@@ -33,9 +33,7 @@ export default function Error({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-gray-600 font-mono bg-gray-100 p-3 rounded">
-            {error.message}
-          </p>
+          <p className="text-sm text-gray-600 font-mono bg-gray-100 p-3 rounded">{error.message}</p>
         </CardContent>
         <CardFooter className="flex gap-2">
           <Button onClick={reset} variant="default">

@@ -60,9 +60,7 @@ export default function QuestionsPage() {
                 <p className="text-lg text-text-primary max-w-sm mx-auto leading-relaxed font-serif">
                   Sign in to view your questions
                 </p>
-                <p className="text-text-secondary">
-                  Ask questions, explore connections
-                </p>
+                <p className="text-text-secondary">Ask questions, explore connections</p>
               </div>
               <SignInButton />
             </motion.div>

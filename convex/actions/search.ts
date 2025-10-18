@@ -16,10 +16,7 @@ export const semanticSearch = action({
     query: v.string(),
     limit: v.optional(v.number()),
   },
-  handler: async (
-    ctx,
-    args
-  ): Promise<Array<{ question: Doc<"questions">; score: number }>> => {
+  handler: async (ctx, args): Promise<Array<{ question: Doc<"questions">; score: number }>> => {
     const limit = args.limit ?? 20;
 
     // Generate embedding for the search query
@@ -38,23 +35,26 @@ export const semanticSearch = action({
 
     // Perform vector search on embeddings
     // Note: vectorSearch returns results with _score (similarity)
-    const results: Array<{ _id: Id<"embeddings">; _score: number }> =
-      await ctx.vectorSearch("embeddings", "by_embedding", {
+    const results: Array<{ _id: Id<"embeddings">; _score: number }> = await ctx.vectorSearch(
+      "embeddings",
+      "by_embedding",
+      {
         vector: queryEmbedding,
         limit,
-      });
-
-    // Create score map for hydration
-    const scoreMap = new Map(
-      results.map((r) => [r._id.toString(), r._score])
+      }
     );
 
+    // Create score map for hydration
+    const scoreMap = new Map(results.map((r) => [r._id.toString(), r._score]));
+
     // Hydrate questions and filter by user
-    const searchResults: Array<{ question: Doc<"questions">; score: number }> =
-      await ctx.runQuery(internal.questions.hydrateSearchResults, {
+    const searchResults: Array<{ question: Doc<"questions">; score: number }> = await ctx.runQuery(
+      internal.questions.hydrateSearchResults,
+      {
         embeddingIds: results.map((r) => r._id),
         scoreMap: Object.fromEntries(scoreMap),
-      });
+      }
+    );
 
     return searchResults;
   },
@@ -69,10 +69,7 @@ export const getRelatedQuestions = action({
     questionId: v.id("questions"),
     limit: v.optional(v.number()),
   },
-  handler: async (
-    ctx,
-    args
-  ): Promise<Array<{ question: Doc<"questions">; score: number }>> => {
+  handler: async (ctx, args): Promise<Array<{ question: Doc<"questions">; score: number }>> => {
     const limit = args.limit ?? 5;
 
     // Get the embedding for this question
@@ -89,21 +86,20 @@ export const getRelatedQuestions = action({
     }
 
     // Search for similar questions (get extra to account for filtering self)
-    const results: Array<{ _id: Id<"embeddings">; _score: number }> =
-      await ctx.vectorSearch("embeddings", "by_embedding", {
+    const results: Array<{ _id: Id<"embeddings">; _score: number }> = await ctx.vectorSearch(
+      "embeddings",
+      "by_embedding",
+      {
         vector: embedding.embedding,
         limit: limit + 1, // +1 to account for self
-      });
+      }
+    );
 
     // Filter out the current question and keep scores
-    const filteredResults = results
-      .filter((r) => r._id !== embedding._id)
-      .slice(0, limit);
+    const filteredResults = results.filter((r) => r._id !== embedding._id).slice(0, limit);
 
     // Create score map for hydration
-    const scoreMap = new Map(
-      filteredResults.map((r) => [r._id.toString(), r._score])
-    );
+    const scoreMap = new Map(filteredResults.map((r) => [r._id.toString(), r._score]));
 
     // Hydrate and filter by user
     const relatedQuestions: Array<{ question: Doc<"questions">; score: number }> =

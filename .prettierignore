@@ -1,0 +1,17 @@
+# Dependencies
+node_modules
+pnpm-lock.yaml
+
+# Build outputs
+.next
+out
+build
+dist
+.convex
+
+# Generated files
+*.tsbuildinfo
+convex/_generated
+
+# Docs and configs that should keep their format
+CHANGELOG.md

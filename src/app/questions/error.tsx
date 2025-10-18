@@ -30,12 +30,10 @@ export default function Error({
 
       <Card className="relative max-w-md w-full border-border-subtle shadow-garden-md">
         <CardHeader>
-          <CardTitle className="text-text-emphasis font-serif">
-            Something went wrong
-          </CardTitle>
+          <CardTitle className="text-text-emphasis font-serif">Something went wrong</CardTitle>
           <CardDescription className="text-text-secondary">
-            An unexpected error occurred while loading your questions. You can try
-            again or return home.
+            An unexpected error occurred while loading your questions. You can try again or return
+            home.
           </CardDescription>
         </CardHeader>
         <CardContent>

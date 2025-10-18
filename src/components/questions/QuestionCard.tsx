@@ -15,11 +15,7 @@ interface QuestionCardProps {
 /**
  * Card component for displaying individual questions.
  */
-export function QuestionCard({
-  question,
-  showRelated = true,
-  index = 0,
-}: QuestionCardProps) {
+export function QuestionCard({ question, showRelated = true, index = 0 }: QuestionCardProps) {
   const displayText = truncateText(question.text, 200);
   const relativeDate = formatRelativeDate(question.createdAt);
 
@@ -36,30 +32,32 @@ export function QuestionCard({
       className="group relative"
     >
       {/* Card container */}
-      <div className={`
+      <div
+        className={`
         relative bg-bg-muted rounded-garden-lg p-6
         border border-border-subtle
         shadow-garden-sm hover:shadow-garden-md
         transition-all duration-300
-        ${isRecent ? 'bg-bg-surface' : 'bg-bg-muted'}
-      `}>
+        ${isRecent ? "bg-bg-surface" : "bg-bg-muted"}
+      `}
+      >
         {/* Subtle inner shadow for depth */}
         <div className="absolute inset-0 rounded-garden-lg shadow-garden-inner pointer-events-none" />
 
         {/* Recency indicator */}
-        <div className={`
+        <div
+          className={`
           absolute top-4 right-4 opacity-0 group-hover:opacity-100
           transition-opacity duration-300
-          ${isRecent ? 'text-text-tertiary' : 'text-text-secondary'}
-        `}>
+          ${isRecent ? "text-text-tertiary" : "text-text-secondary"}
+        `}
+        >
           <Leaf className="w-4 h-4" />
         </div>
 
         {/* Question text */}
         <div className="relative space-y-3">
-          <p className="text-text-emphasis leading-relaxed text-base">
-            {displayText}
-          </p>
+          <p className="text-text-emphasis leading-relaxed text-base">{displayText}</p>
 
           {/* Timestamp and recency badge */}
           <div className="flex items-center gap-2 text-xs text-text-tertiary font-medium">

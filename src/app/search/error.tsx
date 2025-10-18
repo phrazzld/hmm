@@ -27,14 +27,10 @@ export default function SearchError({
       <Card>
         <CardHeader>
           <CardTitle>Search Error</CardTitle>
-          <CardDescription>
-            Something went wrong while searching.
-          </CardDescription>
+          <CardDescription>Something went wrong while searching.</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-gray-600">
-            {error.message || "An unexpected error occurred"}
-          </p>
+          <p className="text-sm text-gray-600">{error.message || "An unexpected error occurred"}</p>
         </CardContent>
         <CardFooter className="flex gap-2">
           <Button onClick={reset}>Try again</Button>

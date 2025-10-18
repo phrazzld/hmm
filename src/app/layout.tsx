@@ -37,38 +37,38 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-          <header className="border-b border-border-subtle bg-bg-surface/80 backdrop-blur-sm sticky top-0 z-50">
-            <div className="container mx-auto px-6 py-5 flex justify-between items-center max-w-5xl">
-              <div className="flex items-center gap-8">
-                <Link
-                  href="/"
-                  className="text-2xl font-serif font-semibold text-interactive-primary hover:text-interactive-hover transition-colors duration-200"
-                >
-                  hmm
-                </Link>
-                <SignedIn>
+            <header className="border-b border-border-subtle bg-bg-surface/80 backdrop-blur-sm sticky top-0 z-50">
+              <div className="container mx-auto px-6 py-5 flex justify-between items-center max-w-5xl">
+                <div className="flex items-center gap-8">
                   <Link
-                    href="/questions"
-                    className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors duration-200 relative group"
+                    href="/"
+                    className="text-2xl font-serif font-semibold text-interactive-primary hover:text-interactive-hover transition-colors duration-200"
                   >
-                    questions
-                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-interactive-primary transition-all duration-200 group-hover:w-full" />
+                    hmm
                   </Link>
-                </SignedIn>
+                  <SignedIn>
+                    <Link
+                      href="/questions"
+                      className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors duration-200 relative group"
+                    >
+                      questions
+                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-interactive-primary transition-all duration-200 group-hover:w-full" />
+                    </Link>
+                  </SignedIn>
+                </div>
+                <nav className="flex items-center gap-4">
+                  <ThemeToggle />
+                  <SignedIn>
+                    <UserButton />
+                  </SignedIn>
+                  <SignedOut>
+                    <SignInButton />
+                  </SignedOut>
+                </nav>
               </div>
-              <nav className="flex items-center gap-4">
-                <ThemeToggle />
-                <SignedIn>
-                  <UserButton />
-                </SignedIn>
-                <SignedOut>
-                  <SignInButton />
-                </SignedOut>
-              </nav>
-            </div>
-          </header>
-          <main>{children}</main>
-          <Toaster />
+            </header>
+            <main>{children}</main>
+            <Toaster />
           </ThemeProvider>
         </ConvexClientProvider>
       </body>

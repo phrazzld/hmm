@@ -56,9 +56,7 @@ export default function Home() {
                 <p className="text-lg text-text-primary max-w-sm mx-auto leading-relaxed font-serif">
                   Sign in to get started
                 </p>
-                <p className="text-text-secondary">
-                  Ask questions, explore connections
-                </p>
+                <p className="text-text-secondary">Ask questions, explore connections</p>
               </div>
               <SignInButton />
             </motion.div>

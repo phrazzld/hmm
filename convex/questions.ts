@@ -27,11 +27,9 @@ export const createQuestion = mutation({
     // Convex hasn't regenerated types for actions/* yet, so we use `as any` to access
     // the nested module. This is safe at runtime but bypasses TypeScript checking.
     // Will be resolved automatically when Convex regenerates types after next deploy.
-    await ctx.scheduler.runAfter(
-      0,
-      (internal as any)["actions/embeddings"].generateEmbedding,
-      { questionId }
-    );
+    await ctx.scheduler.runAfter(0, (internal as any)["actions/embeddings"].generateEmbedding, {
+      questionId,
+    });
 
     return questionId;
   },

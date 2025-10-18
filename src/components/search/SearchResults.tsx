@@ -44,9 +44,7 @@ export function SearchResults({ results, query, isLoading = false }: SearchResul
     return (
       <div className="text-center py-12 text-text-secondary">
         <p className="text-lg">No results found</p>
-        <p className="text-sm mt-2">
-          Try rephrasing your search or ask a new question.
-        </p>
+        <p className="text-sm mt-2">Try rephrasing your search or ask a new question.</p>
       </div>
     );
   }
@@ -76,14 +74,10 @@ export function SearchResults({ results, query, isLoading = false }: SearchResul
                     Asked {formatRelativeDate(question.createdAt)}
                   </p>
                   {isWeakMatch && (
-                    <span className="text-xs text-text-tertiary italic">
-                      · weakly matched
-                    </span>
+                    <span className="text-xs text-text-tertiary italic">· weakly matched</span>
                   )}
                 </div>
-                <span className="text-xs font-medium text-text-secondary">
-                  {scorePercentage}%
-                </span>
+                <span className="text-xs font-medium text-text-secondary">{scorePercentage}%</span>
               </div>
             </div>
           );
