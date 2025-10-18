@@ -12,6 +12,7 @@ import type { Doc } from "@/../convex/_generated/dataModel";
 
 interface SearchResult {
   question: Doc<"questions">;
+  score: number;
 }
 
 export default function QuestionsPage() {
