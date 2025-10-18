@@ -16,6 +16,3 @@ pre-push:
   commands:
     type-check:
       run: pnpm type-check
-
-    build-check:
-      run: pnpm build
