@@ -1,12 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { GeistSans } from "geist/font/sans";
+import { Crimson_Text } from "next/font/google";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { ConvexClientProvider } from "@/components/providers/ConvexClientProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { SignInButton } from "@/components/auth/SignInButton";
 import { UserButton } from "@/components/auth/UserButton";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
+
+const crimson = Crimson_Text({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+  variable: "--font-crimson",
+});
 
 export const metadata: Metadata = {
   title: "hmm - A place for curiosity",
@@ -19,28 +28,37 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${GeistSans.className} antialiased`}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${GeistSans.className} ${crimson.variable} antialiased bg-bg-canvas`}>
         <ConvexClientProvider>
-          <header className="border-b">
-            <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-              <Link href="/" className="text-2xl font-bold hover:opacity-80">
-                hmm
-              </Link>
-              <nav className="flex items-center gap-6">
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+          <header className="border-b border-border-subtle bg-bg-surface/80 backdrop-blur-sm sticky top-0 z-50">
+            <div className="container mx-auto px-6 py-5 flex justify-between items-center max-w-5xl">
+              <div className="flex items-center gap-8">
+                <Link
+                  href="/"
+                  className="text-2xl font-serif font-semibold text-interactive-primary hover:text-interactive-hover transition-colors duration-200"
+                >
+                  hmm
+                </Link>
                 <SignedIn>
                   <Link
-                    href="/"
-                    className="text-sm text-gray-600 hover:text-gray-900"
+                    href="/questions"
+                    className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors duration-200 relative group"
                   >
-                    Home
+                    questions
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-interactive-primary transition-all duration-200 group-hover:w-full" />
                   </Link>
-                  <Link
-                    href="/search"
-                    className="text-sm text-gray-600 hover:text-gray-900"
-                  >
-                    Search
-                  </Link>
+                </SignedIn>
+              </div>
+              <nav className="flex items-center gap-4">
+                <ThemeToggle />
+                <SignedIn>
                   <UserButton />
                 </SignedIn>
                 <SignedOut>
@@ -51,6 +69,7 @@ export default function RootLayout({
           </header>
           <main>{children}</main>
           <Toaster />
+          </ThemeProvider>
         </ConvexClientProvider>
       </body>
     </html>

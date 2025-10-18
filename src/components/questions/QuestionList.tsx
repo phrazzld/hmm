@@ -1,16 +1,18 @@
 "use client";
 
 import { useQuery } from "convex/react";
+import { motion } from "framer-motion";
 import { api } from "@/../convex/_generated/api";
 import { QuestionCard } from "./QuestionCard";
+import { Sprout } from "lucide-react";
 
 interface QuestionListProps {
   limit?: number;
 }
 
 /**
- * Question list with real-time subscription.
- * Automatically updates when questions are added via Convex.
+ * Question list with smooth animations.
+ * Displays user's questions.
  */
 export function QuestionList({ limit }: QuestionListProps) {
   const questions = useQuery(api.questions.getQuestions, { limit });
@@ -20,9 +22,12 @@ export function QuestionList({ limit }: QuestionListProps) {
     return (
       <div className="space-y-4">
         {[...Array(3)].map((_, i) => (
-          <div
+          <motion.div
             key={i}
-            className="h-24 bg-gray-100 rounded-lg animate-pulse"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: i * 0.1 }}
+            className="h-32 bg-bg-muted rounded-garden-lg animate-pulse border border-border-subtle"
           />
         ))}
       </div>
@@ -30,18 +35,36 @@ export function QuestionList({ limit }: QuestionListProps) {
   }
 
   if (questions.length === 0) {
+    // Empty state
     return (
-      <div className="text-center py-12 text-gray-500">
-        <p className="text-lg">No questions yet.</p>
-        <p className="text-sm mt-2">Ask your first question above.</p>
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center py-16 space-y-4"
+      >
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-bg-subtle">
+          <Sprout className="w-8 h-8 text-text-secondary" />
+        </div>
+        <div className="space-y-2">
+          <p className="text-lg font-serif text-text-primary">
+            No questions yet
+          </p>
+          <p className="text-sm text-text-secondary">
+            Ask your first question above
+          </p>
+        </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      {questions.map((question) => (
-        <QuestionCard key={question._id} question={question} />
+    <div className="space-y-6">
+      {questions.map((question, index) => (
+        <QuestionCard
+          key={question._id}
+          question={question}
+          index={index}
+        />
       ))}
     </div>
   );

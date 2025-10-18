@@ -4,6 +4,7 @@
 
 @layer base {
   :root {
+    /* shadcn/ui base tokens */
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -29,33 +30,113 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+
+    /* Garden semantic tokens - Light mode */
+    /* Text hierarchy */
+    --text-emphasis: 94 35% 12%;      /* Headlines, important text (sage-900) */
+    --text-primary: 94 25% 30%;       /* Body text (sage-700) */
+    --text-secondary: 94 20% 45%;     /* Supporting text (sage-600) */
+    --text-tertiary: 94 15% 55%;      /* De-emphasized (sage-500) */
+
+    /* Backgrounds */
+    --bg-canvas: 30 50% 98%;          /* Page background (cream-50) */
+    --bg-surface: 0 0% 100%;          /* Cards, elevated surfaces (white) */
+    --bg-muted: 30 40% 95%;           /* Subtle backgrounds (cream-100) */
+    --bg-subtle: 94 25% 98%;          /* Very subtle (sage-50) */
+
+    /* Borders */
+    --border-default: 94 15% 85%;     /* Standard borders (sage-200) */
+    --border-subtle: 94 10% 92%;      /* Light dividers (sage-100) */
+    --border-emphasis: 94 20% 75%;    /* Strong borders (sage-300) */
+
+    /* Interactive elements */
+    --interactive-primary: 94 25% 30%;      /* Primary actions (sage-700) */
+    --interactive-primary-foreground: 0 0% 100%;  /* Text on primary buttons (white) */
+    --interactive-hover: 94 30% 25%;        /* Hover state (sage-800) */
+    --interactive-active: 94 35% 20%;       /* Active state (sage-900) */
+    --interactive-disabled: 94 10% 70%;     /* Disabled state */
+
+    /* Gradients */
+    --gradient-start: 30 40% 95%;     /* cream-100 with low opacity */
+    --gradient-end: 30 35% 97%;       /* cream-50 with low opacity */
   }
 
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
+    /* shadcn/ui base tokens - Dark mode */
+    /* Moonlit garden: dark sage-tinted backgrounds */
+    --background: 94 15% 8%;
+    --foreground: 30 15% 92%;
+
+    /* Cards slightly elevated from background */
+    --card: 94 12% 11%;
+    --card-foreground: 30 12% 90%;
+
+    /* Popovers with subtle depth */
+    --popover: 94 18% 10%;
+    --popover-foreground: 30 15% 92%;
+
+    /* Primary: muted sage for interactive elements */
+    --primary: 94 20% 75%;
+    --primary-foreground: 94 35% 12%;
+
+    /* Secondary: deeper sage tones */
+    --secondary: 94 15% 18%;
+    --secondary-foreground: 94 10% 85%;
+
+    /* Muted: subtle sage gray */
+    --muted: 94 12% 15%;
+    --muted-foreground: 94 8% 60%;
+
+    /* Accent: deep plum for emphasis */
+    --accent: 270 20% 25%;
+    --accent-foreground: 270 15% 90%;
+
+    /* Destructive: warm, muted red */
+    --destructive: 0 50% 45%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+
+    /* Borders: very subtle sage-tinted */
+    --border: 94 10% 20%;
+    --input: 94 12% 18%;
+
+    /* Focus ring: lighter sage */
+    --ring: 94 25% 70%;
+
+    /* Charts: muted garden colors */
+    --chart-1: 94 40% 50%;
+    --chart-2: 270 35% 55%;
+    --chart-3: 30 45% 60%;
+    --chart-4: 180 40% 50%;
+    --chart-5: 320 40% 55%;
+
+    /* Garden semantic tokens - Dark mode */
+    /* Text hierarchy - inverted for dark backgrounds */
+    --text-emphasis: 30 15% 92%;         /* Headlines (light cream) */
+    --text-primary: 30 12% 85%;          /* Body text */
+    --text-secondary: 94 10% 70%;        /* Supporting text */
+    --text-tertiary: 94 8% 55%;          /* De-emphasized */
+
+    /* Backgrounds - dark sage tones */
+    --bg-canvas: 94 15% 8%;              /* Page background (dark sage) */
+    --bg-surface: 94 12% 11%;            /* Cards, elevated */
+    --bg-muted: 94 12% 15%;              /* Subtle backgrounds */
+    --bg-subtle: 94 10% 13%;             /* Very subtle */
+
+    /* Borders - subtle in dark mode */
+    --border-default: 94 10% 20%;        /* Standard borders */
+    --border-subtle: 94 8% 15%;          /* Light dividers */
+    --border-emphasis: 94 12% 25%;       /* Strong borders */
+
+    /* Interactive elements - darker in dark mode for white text */
+    --interactive-primary: 94 25% 40%;      /* Primary actions (medium sage) */
+    --interactive-primary-foreground: 30 15% 98%;  /* Text on primary buttons (light cream) */
+    --interactive-hover: 94 30% 45%;        /* Hover state (slightly lighter) */
+    --interactive-active: 94 25% 35%;       /* Active state (darker) */
+    --interactive-disabled: 94 8% 25%;      /* Disabled state */
+
+    /* Gradients - very subtle in dark */
+    --gradient-start: 94 12% 10%;
+    --gradient-end: 94 10% 12%;
   }
 }
 
