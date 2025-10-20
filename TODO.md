@@ -49,7 +49,7 @@
   - 100% coverage achieved for security boundary
   ```
 
-- [~] **Test retry logic (reliability-critical)**
+- [x] **Test retry logic (reliability-critical)**
 
   ```
   Files: convex/lib/retry.test.ts (NEW), convex/lib/retry.ts
@@ -64,9 +64,16 @@
   Success: 100% branch coverage, timing verified
   Module: OpenAI API reliability (prevents cascading failures)
   Time: 45min
+
+  Work Log:
+  - Created 9 comprehensive test cases
+  - Used vi.useFakeTimers() for deterministic timing tests
+  - Tested exponential backoff with jitter
+  - All tests passing (6ms execution time)
+  - Proper async promise handling (no unhandled rejections)
   ```
 
-- [ ] **Test date formatting utilities**
+- [~] **Test date formatting utilities**
 
   ```
   Files: src/lib/date.test.ts (NEW), src/lib/date.ts
