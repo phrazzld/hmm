@@ -103,7 +103,7 @@
 
 **Note**: Convex functions need custom test setup - no built-in test harness. Create mocks for `ctx.db`, `ctx.auth`, `ctx.scheduler`.
 
-- [ ] **Create Convex test utilities (foundational)**
+- [~] **Create Convex test utilities (foundational)**
 
   ```
   Files: convex/test/utils.ts (NEW)
