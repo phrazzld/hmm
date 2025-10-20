@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { createQuestion } from "./questions";
-import { mockMutationCtx } from "./test/utils";
+import { createQuestion, getQuestions, getQuestion } from "./questions";
+import { mockMutationCtx, mockQueryCtx } from "./test/utils";
+import type { Id } from "./_generated/dataModel";
 
 describe("createQuestion", () => {
   it("should insert question with valid text and schedule embedding", async () => {
@@ -146,5 +147,267 @@ describe("createQuestion", () => {
     const users = await ctx.db.query("users").collect();
     expect(users).toHaveLength(1);
     expect(users[0].clerkId).toBe("new-user");
+  });
+});
+
+describe("getQuestions", () => {
+  it("should return only current user's questions", async () => {
+    const ctx = mockQueryCtx({
+      userId: "user-1",
+      email: "user1@example.com",
+    });
+
+    // Create user 1
+    const user1Id = await ctx.db.insert("users", {
+      clerkId: "user-1",
+      email: "user1@example.com",
+      name: "User 1",
+      createdAt: Date.now(),
+    });
+
+    // Create user 2
+    const user2Id = await ctx.db.insert("users", {
+      clerkId: "user-2",
+      email: "user2@example.com",
+      name: "User 2",
+      createdAt: Date.now(),
+    });
+
+    // Create questions for user 1
+    await ctx.db.insert("questions", {
+      userId: user1Id,
+      text: "User 1 question 1",
+      createdAt: Date.now() - 2000,
+      updatedAt: Date.now() - 2000,
+    });
+
+    await ctx.db.insert("questions", {
+      userId: user1Id,
+      text: "User 1 question 2",
+      createdAt: Date.now() - 1000,
+      updatedAt: Date.now() - 1000,
+    });
+
+    // Create question for user 2 (should not be returned)
+    await ctx.db.insert("questions", {
+      userId: user2Id,
+      text: "User 2 question",
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    });
+
+    const result = await getQuestions(ctx, {
+      paginationOpts: { numItems: 10, cursor: undefined },
+    });
+
+    // Should only return user 1's questions
+    expect(result.page).toHaveLength(2);
+    expect(result.page.every((q) => q.userId === user1Id)).toBe(true);
+  });
+
+  it("should return empty page for new user (no user record)", async () => {
+    const ctx = mockQueryCtx({
+      userId: "new-user",
+      email: "new@example.com",
+    });
+
+    const result = await getQuestions(ctx, {
+      paginationOpts: { numItems: 10, cursor: undefined },
+    });
+
+    expect(result.page).toEqual([]);
+    expect(result.isDone).toBe(true);
+    expect(result.continueCursor).toBe("");
+  });
+
+  it("should return empty page for unauthenticated user", async () => {
+    const ctx = mockQueryCtx({ authenticated: false });
+
+    const result = await getQuestions(ctx, {
+      paginationOpts: { numItems: 10, cursor: undefined },
+    });
+
+    expect(result.page).toEqual([]);
+    expect(result.isDone).toBe(true);
+    expect(result.continueCursor).toBe("");
+  });
+
+  it("should order questions by createdAt desc (most recent first)", async () => {
+    const ctx = mockQueryCtx({
+      userId: "user-1",
+      email: "user1@example.com",
+    });
+
+    // Create user
+    const userId = await ctx.db.insert("users", {
+      clerkId: "user-1",
+      email: "user1@example.com",
+      name: "User 1",
+      createdAt: Date.now(),
+    });
+
+    // Create questions with different timestamps
+    const now = Date.now();
+    await ctx.db.insert("questions", {
+      userId,
+      text: "Oldest question",
+      createdAt: now - 3000,
+      updatedAt: now - 3000,
+    });
+
+    await ctx.db.insert("questions", {
+      userId,
+      text: "Middle question",
+      createdAt: now - 2000,
+      updatedAt: now - 2000,
+    });
+
+    await ctx.db.insert("questions", {
+      userId,
+      text: "Newest question",
+      createdAt: now - 1000,
+      updatedAt: now - 1000,
+    });
+
+    const result = await getQuestions(ctx, {
+      paginationOpts: { numItems: 10, cursor: undefined },
+    });
+
+    expect(result.page).toHaveLength(3);
+    expect(result.page[0].text).toBe("Newest question");
+    expect(result.page[1].text).toBe("Middle question");
+    expect(result.page[2].text).toBe("Oldest question");
+  });
+
+  it("should respect pagination limit", async () => {
+    const ctx = mockQueryCtx({
+      userId: "user-1",
+      email: "user1@example.com",
+    });
+
+    // Create user
+    const userId = await ctx.db.insert("users", {
+      clerkId: "user-1",
+      email: "user1@example.com",
+      name: "User 1",
+      createdAt: Date.now(),
+    });
+
+    // Create 5 questions
+    for (let i = 0; i < 5; i++) {
+      await ctx.db.insert("questions", {
+        userId,
+        text: `Question ${i}`,
+        createdAt: Date.now() - (5 - i) * 1000,
+        updatedAt: Date.now() - (5 - i) * 1000,
+      });
+    }
+
+    // Request only 2 questions
+    const result = await getQuestions(ctx, {
+      paginationOpts: { numItems: 2, cursor: undefined },
+    });
+
+    expect(result.page).toHaveLength(2);
+    expect(result.isDone).toBe(false);
+    expect(result.continueCursor).toBeTruthy();
+  });
+});
+
+describe("getQuestion", () => {
+  it("should return question with valid ID and ownership", async () => {
+    const ctx = mockQueryCtx({
+      userId: "user-1",
+      email: "user1@example.com",
+    });
+
+    // Create user
+    const userId = await ctx.db.insert("users", {
+      clerkId: "user-1",
+      email: "user1@example.com",
+      name: "User 1",
+      createdAt: Date.now(),
+    });
+
+    // Create question
+    const questionId = await ctx.db.insert("questions", {
+      userId,
+      text: "Test question",
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    });
+
+    const question = await getQuestion(ctx, { questionId });
+
+    expect(question).toBeDefined();
+    expect(question.text).toBe("Test question");
+    expect(question.userId).toBe(userId);
+  });
+
+  it("should throw error for question owned by different user", async () => {
+    const ctx = mockQueryCtx({
+      userId: "user-1",
+      email: "user1@example.com",
+    });
+
+    // Create user 1
+    await ctx.db.insert("users", {
+      clerkId: "user-1",
+      email: "user1@example.com",
+      name: "User 1",
+      createdAt: Date.now(),
+    });
+
+    // Create user 2
+    const user2Id = await ctx.db.insert("users", {
+      clerkId: "user-2",
+      email: "user2@example.com",
+      name: "User 2",
+      createdAt: Date.now(),
+    });
+
+    // Create question owned by user 2
+    const questionId = await ctx.db.insert("questions", {
+      userId: user2Id,
+      text: "User 2's question",
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    });
+
+    // User 1 tries to access user 2's question
+    await expect(getQuestion(ctx, { questionId })).rejects.toThrow(
+      "Not authorized to access this question"
+    );
+  });
+
+  it("should throw error for invalid question ID", async () => {
+    const ctx = mockQueryCtx({
+      userId: "user-1",
+      email: "user1@example.com",
+    });
+
+    // Create user
+    await ctx.db.insert("users", {
+      clerkId: "user-1",
+      email: "user1@example.com",
+      name: "User 1",
+      createdAt: Date.now(),
+    });
+
+    const fakeQuestionId = "questions:nonexistent" as Id<"questions">;
+
+    await expect(getQuestion(ctx, { questionId: fakeQuestionId })).rejects.toThrow(
+      "Question not found"
+    );
+  });
+
+  it("should throw error for unauthenticated user", async () => {
+    const ctx = mockQueryCtx({ authenticated: false });
+
+    const fakeQuestionId = "questions:test" as Id<"questions">;
+
+    await expect(getQuestion(ctx, { questionId: fakeQuestionId })).rejects.toThrow(
+      "Unauthenticated"
+    );
   });
 });

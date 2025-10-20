@@ -77,6 +77,24 @@ export function mockDb() {
                   ? filtered.sort((a, b) => b._creationTime - a._creationTime)
                   : filtered.sort((a, b) => a._creationTime - b._creationTime);
               }),
+              paginate: vi.fn(async (opts: { numItems: number; cursor?: string }) => {
+                const sorted =
+                  direction === "desc"
+                    ? filtered.sort((a, b) => b.createdAt - a.createdAt)
+                    : filtered.sort((a, b) => a.createdAt - b.createdAt);
+
+                const startIndex = opts.cursor ? parseInt(opts.cursor, 10) : 0;
+                const endIndex = startIndex + opts.numItems;
+                const page = sorted.slice(startIndex, endIndex);
+                const isDone = endIndex >= sorted.length;
+                const continueCursor = isDone ? "" : endIndex.toString();
+
+                return {
+                  page,
+                  isDone,
+                  continueCursor,
+                };
+              }),
             })),
             unique: vi.fn(async () => filtered[0] || null),
             collect: vi.fn(async () => filtered),
