@@ -73,7 +73,7 @@
   - Proper async promise handling (no unhandled rejections)
   ```
 
-- [~] **Test date formatting utilities**
+- [x] **Test date formatting utilities**
 
   ```
   Files: src/lib/date.test.ts (NEW), src/lib/date.ts
@@ -88,21 +88,15 @@
   Success: All time ranges covered
   Module: User-facing timestamps (UX clarity)
   Time: 30min
-  ```
 
-- [ ] **Test text truncation utility**
-  ```
-  Files: src/lib/date.test.ts (add to existing file), src/lib/date.ts
-  Approach: String manipulation testing
-  Tests:
-    - Text under limit → returns original
-    - Text exactly at limit → returns original
-    - Text over limit → truncates with "..."
-    - Empty string → returns empty
-    - Very long text (1000 chars) → truncates to maxLength + "..."
-  Success: All branches covered
-  Module: Display formatting (prevents layout breaks)
-  Time: 15min
+  Work Log:
+  - Created 20 comprehensive test cases (13 for dates, 7 for truncation)
+  - Combined both formatRelativeDate and truncateText tests in one file
+  - Used vi.useFakeTimers() for deterministic date testing
+  - All time ranges tested including edge cases (years support added)
+  - Truncation tests include whitespace trimming edge cases
+  - All tests passing (4ms execution time)
+  - 100% coverage for both utilities
   ```
 
 ### Phase 2: Backend Logic (Convex Testing) (3-4 hours)
