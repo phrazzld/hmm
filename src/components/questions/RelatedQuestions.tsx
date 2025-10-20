@@ -5,8 +5,8 @@ import { useAction } from "convex/react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { api } from "@/../convex/_generated/api";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Button } from "@/components/ui/button";
 import { formatRelativeDate, truncateText } from "@/lib/date";
+import { RelatednessIndicator } from "./RelatednessBars";
 import type { Id, Doc } from "@/../convex/_generated/dataModel";
 
 interface RelatedQuestionsProps {
@@ -45,59 +45,52 @@ export function RelatedQuestions({ questionId, limit = 5 }: RelatedQuestionsProp
 
   return (
     <Collapsible open={isOpen} onOpenChange={handleToggle}>
+      {/* Inline badge-style trigger */}
       <CollapsibleTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="flex items-center gap-2 text-xs text-text-secondary hover:text-text-primary transition-colors"
-        >
-          {isOpen ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-          <span>Related questions</span>
-        </Button>
+        <button className="inline-flex items-center gap-1.5 text-xs text-text-secondary hover:text-text-primary transition-colors group/trigger">
+          <span className="font-medium">related</span>
+          {isOpen ? (
+            <ChevronUp className="h-3 w-3 opacity-60" />
+          ) : (
+            <ChevronDown className="h-3 w-3 opacity-60" />
+          )}
+        </button>
       </CollapsibleTrigger>
-      <CollapsibleContent className="mt-2 space-y-2">
+
+      {/* Inset panel for related questions */}
+      <CollapsibleContent className="mt-2">
         {isLoading ? (
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {[...Array(3)].map((_, i) => (
-              <div
-                key={i}
-                className="h-16 bg-bg-muted rounded-garden-sm animate-pulse border border-border-subtle"
-              />
+              <div key={i} className="h-12 bg-bg-muted/50 rounded-md animate-pulse" />
             ))}
           </div>
         ) : related.length === 0 ? (
-          <p className="text-xs text-text-tertiary italic">No related questions found yet.</p>
+          <p className="text-xs text-text-tertiary italic pl-2">No related questions found yet.</p>
         ) : (
-          <div className="space-y-2 pl-4">
-            {related.map(({ question, score }) => {
-              const scorePercentage = Math.round(score * 100);
-              const isWeaklyRelated = score < 0.5;
-
-              return (
-                <div
-                  key={question._id}
-                  className="text-sm p-2 rounded-garden-sm hover:bg-bg-subtle cursor-pointer transition-colors"
-                  title={`${scorePercentage}% similar`}
-                >
-                  <p className="text-text-emphasis leading-relaxed">
-                    {truncateText(question.text, 120)}
-                  </p>
-                  <div className="flex items-center justify-between mt-1">
-                    <div className="flex items-center gap-2">
-                      <p className="text-xs text-text-tertiary">
-                        {formatRelativeDate(question.createdAt)}
-                      </p>
-                      {isWeaklyRelated && (
-                        <span className="text-xs text-text-tertiary italic">· loosely related</span>
-                      )}
-                    </div>
-                    <span className="text-xs font-medium text-text-secondary">
-                      {scorePercentage}%
-                    </span>
-                  </div>
+          <div className="bg-bg-subtle/30 rounded-lg p-2.5 border border-border-subtle/50 space-y-1.5">
+            {related.map(({ question, score }) => (
+              <div
+                key={question._id}
+                className="group/item flex items-start gap-2.5 p-2 rounded-md hover:bg-bg-surface cursor-pointer transition-colors"
+                title="View question"
+              >
+                {/* Visual strength indicator */}
+                <div className="flex-shrink-0 pt-0.5">
+                  <RelatednessIndicator score={score} showPercentage />
                 </div>
-              );
-            })}
+
+                {/* Question content */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-text-emphasis leading-relaxed">
+                    {truncateText(question.text, 100)}
+                  </p>
+                  <p className="text-xs text-text-tertiary mt-0.5">
+                    {formatRelativeDate(question.createdAt)}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </CollapsibleContent>

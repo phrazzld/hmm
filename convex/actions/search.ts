@@ -10,6 +10,7 @@ import type { Doc, Id } from "../_generated/dataModel";
 /**
  * Search questions semantically using natural language.
  * Returns questions ranked by semantic similarity to the query.
+ * Supports pagination by returning more results than initially displayed.
  */
 export const semanticSearch = action({
   args: {
@@ -17,7 +18,9 @@ export const semanticSearch = action({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args): Promise<Array<{ question: Doc<"questions">; score: number }>> => {
-    const limit = args.limit ?? 20;
+    // Fetch more results upfront to enable client-side pagination
+    // This is more efficient than multiple vector searches with the same query
+    const limit = args.limit ?? 50; // Increased default to support pagination
 
     // Generate embedding for the search query
     const openai = getOpenAIClient();

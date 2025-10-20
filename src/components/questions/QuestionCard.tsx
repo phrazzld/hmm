@@ -1,9 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { formatRelativeDate, truncateText } from "@/lib/date";
 import { RelatedQuestions } from "./RelatedQuestions";
-import { Leaf } from "lucide-react";
 import type { Doc } from "@/../convex/_generated/dataModel";
 
 interface QuestionCardProps {
@@ -24,17 +22,14 @@ export function QuestionCard({ question, showRelated = true, index = 0 }: Questi
   const isRecent = ageInDays < 7;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1, duration: 0.3 }}
-      whileHover={{ y: -2 }}
-      className="group relative"
+    <div
+      className="group relative animate-fade-in-up hover:-translate-y-0.5 transition-transform duration-300"
+      style={{ animationDelay: `${index * 100}ms` }}
     >
-      {/* Card container */}
+      {/* Card container - tightened padding */}
       <div
         className={`
-        relative bg-bg-muted rounded-garden-lg p-6
+        relative rounded-garden-lg p-4
         border border-border-subtle
         shadow-garden-sm hover:shadow-garden-md
         transition-all duration-300
@@ -44,40 +39,29 @@ export function QuestionCard({ question, showRelated = true, index = 0 }: Questi
         {/* Subtle inner shadow for depth */}
         <div className="absolute inset-0 rounded-garden-lg shadow-garden-inner pointer-events-none" />
 
-        {/* Recency indicator */}
-        <div
-          className={`
-          absolute top-4 right-4 opacity-0 group-hover:opacity-100
-          transition-opacity duration-300
-          ${isRecent ? "text-text-tertiary" : "text-text-secondary"}
-        `}
-        >
-          <Leaf className="w-4 h-4" />
-        </div>
-
         {/* Question text */}
-        <div className="relative space-y-3">
-          <p className="text-text-emphasis leading-relaxed text-base">{displayText}</p>
+        <div className="relative space-y-2">
+          <p className="text-text-emphasis leading-relaxed text-base pr-6">{displayText}</p>
 
-          {/* Timestamp and recency badge */}
-          <div className="flex items-center gap-2 text-xs text-text-tertiary font-medium">
-            <span>Asked {relativeDate}</span>
+          {/* Timestamp with subtle recent indicator */}
+          <div className="flex items-center gap-1.5 text-xs text-text-tertiary">
             {isRecent && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-bg-subtle text-text-primary">
-                <Leaf className="w-3 h-3" />
-                <span>Recent</span>
-              </span>
+              <span
+                className="inline-block w-1.5 h-1.5 rounded-full bg-green-500/60"
+                title="Recent question"
+              />
             )}
+            <span>Asked {relativeDate}</span>
           </div>
         </div>
 
-        {/* Related questions section */}
+        {/* Related questions section - reduced spacing */}
         {showRelated && (
-          <div className="mt-4 pt-4 border-t border-border-subtle/50">
+          <div className="mt-3 pt-3 border-t border-border-subtle/50">
             <RelatedQuestions questionId={question._id} />
           </div>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }

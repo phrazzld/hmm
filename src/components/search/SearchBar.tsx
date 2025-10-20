@@ -20,9 +20,12 @@ interface SearchBarProps {
   placeholder?: string;
 }
 
+const LOADING_DISPLAY_DELAY = 300; // Only show loading indicator if search takes > 300ms
+
 /**
  * Search bar with debounced semantic search.
  * Delays search until user stops typing (500ms).
+ * Uses delayed loading indicator to prevent flicker on fast searches.
  */
 export function SearchBar({
   onResults,
@@ -30,34 +33,49 @@ export function SearchBar({
   placeholder = "Search your questions...",
 }: SearchBarProps) {
   const [query, setQuery] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isActuallyLoading, setIsActuallyLoading] = useState(false);
+  const [showLoadingIndicator, setShowLoadingIndicator] = useState(false);
   const debouncedQuery = useDebounce(query, 500);
   const semanticSearch = useAction(api.actions.search.semanticSearch);
+
+  // Delayed loading indicator: only show if search takes > 300ms
+  useEffect(() => {
+    if (!isActuallyLoading) {
+      setShowLoadingIndicator(false);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setShowLoadingIndicator(true);
+    }, LOADING_DISPLAY_DELAY);
+
+    return () => clearTimeout(timer);
+  }, [isActuallyLoading]);
 
   useEffect(() => {
     // Don't search for empty queries
     if (!debouncedQuery.trim()) {
       onResults?.([], "");
-      setIsLoading(false);
+      setIsActuallyLoading(false);
       onLoadingChange?.(false);
       return;
     }
 
     // Perform search
     const performSearch = async () => {
-      setIsLoading(true);
+      setIsActuallyLoading(true);
       onLoadingChange?.(true);
       try {
         const results = await semanticSearch({
           query: debouncedQuery,
-          limit: 10,
+          // Fetch more results upfront for client-side pagination
         });
         onResults?.(results, debouncedQuery);
       } catch (error) {
         console.error("Search failed:", error);
         onResults?.([], debouncedQuery);
       } finally {
-        setIsLoading(false);
+        setIsActuallyLoading(false);
         onLoadingChange?.(false);
       }
     };
@@ -70,7 +88,7 @@ export function SearchBar({
       <Search
         className={cn(
           "absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors duration-200",
-          isLoading ? "text-interactive-primary" : "text-text-tertiary"
+          showLoadingIndicator ? "text-interactive-primary" : "text-text-tertiary"
         )}
       />
       <Input
@@ -78,23 +96,8 @@ export function SearchBar({
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder={placeholder}
-        className={cn(
-          "pl-10 transition-all duration-200",
-          isLoading &&
-            "border-interactive-primary ring-2 ring-interactive-primary/20 animate-[search-pulse_2s_ease-in-out_infinite]"
-        )}
+        className="pl-10"
       />
-      <style jsx>{`
-        @keyframes search-pulse {
-          0%,
-          100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.85;
-          }
-        }
-      `}</style>
     </div>
   );
 }
