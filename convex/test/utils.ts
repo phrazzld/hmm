@@ -114,7 +114,7 @@ export function mockAuth(options?: {
 
       return {
         subject: options?.userId || "test-user-id",
-        email: options?.email || "test@example.com",
+        email: options?.email !== undefined ? options.email : "test@example.com",
         name: options?.name || "Test User",
       };
     }),

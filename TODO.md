@@ -103,7 +103,7 @@
 
 **Note**: Convex functions need custom test setup - no built-in test harness. Create mocks for `ctx.db`, `ctx.auth`, `ctx.scheduler`.
 
-- [~] **Create Convex test utilities (foundational)**
+- [x] **Create Convex test utilities (foundational)**
 
   ```
   Files: convex/test/utils.ts (NEW)
@@ -117,9 +117,18 @@
   Module: Test infrastructure (enables backend testing)
   Time: 60min
   Note: This is foundational - all backend tests depend on this
+
+  Work Log:
+  - Created complete mock implementation for Convex database
+  - In-memory storage with query/insert/patch/delete support
+  - Index filtering with .withIndex() and .eq() support
+  - Mock auth with configurable authenticated/unauthenticated states
+  - Mock scheduler and storage utilities
+  - 12 tests verifying all mock functionality
+  - Deep module: mockQueryCtx() and mockMutationCtx() hide all complexity
   ```
 
-- [ ] **Test auth helpers (security-critical)**
+- [~] **Test auth helpers (security-critical)**
 
   ```
   Files: convex/lib/auth.test.ts (NEW), convex/lib/auth.ts
