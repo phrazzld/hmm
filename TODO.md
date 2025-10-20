@@ -212,7 +212,7 @@
 
 **Note**: Only test critical user flows. Skip shadcn/ui components (already tested upstream).
 
-- [ ] **Test QuestionInput component (user-facing)**
+- [x] **Test QuestionInput component (user-facing)**
 
   ```
   Files: src/components/questions/QuestionInput.test.tsx (NEW)
@@ -229,6 +229,21 @@
   Success: Full user flow tested, edge cases covered
   Module: Question input UI (primary user interaction)
   Time: 60min
+
+  Work Log:
+  - Created 11 comprehensive UI interaction tests
+  - Mocked useMutation (Convex) and useToast hooks
+  - Verified typing updates textarea value
+  - Verified valid submission clears input and calls mutation
+  - Verified invalid submission shows toast and preserves text
+  - Verified character counter appears at 80% (400 chars)
+  - Verified warning color (text-accent) at <50 chars remaining
+  - Verified Enter key submits, Shift+Enter adds newline
+  - Verified mutation error restores text and shows toast
+  - Verified onQuestionCreated callback called with question ID
+  - Verified button disabled when empty or pending
+  - All 11 tests passing (total: 87 tests, up from 76)
+  - User interaction flow fully validated
   ```
 
 - [ ] **Test SearchBar component (debounce logic)**
