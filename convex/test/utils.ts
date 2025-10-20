@@ -128,10 +128,11 @@ export function mockScheduler() {
   return {
     runAfter: vi.fn(async (delayMs: number, functionReference: any, args: any) => {
       // In tests, we just record that scheduling was called
-      return `scheduled:${functionReference.name || "unknown"}`;
+      // Don't try to access properties on functionReference as it may be a complex object
+      return `scheduled:${Date.now()}`;
     }),
     runAt: vi.fn(async (timestamp: number, functionReference: any, args: any) => {
-      return `scheduled:${functionReference.name || "unknown"}`;
+      return `scheduled:${Date.now()}`;
     }),
   };
 }
