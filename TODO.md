@@ -246,11 +246,11 @@
   - User interaction flow fully validated
   ```
 
-- [ ] **Test SearchBar component (debounce logic)**
+- [x] **Test SearchBar component (debounce logic)**
 
   ```
   Files: src/components/search/SearchBar.test.tsx (NEW)
-  Approach: Render, userEvent for typing, vi.useFakeTimers for debounce
+  Approach: Render, userEvent for typing, real timers with waitFor
   Tests:
     - Typing triggers debounced search (500ms delay)
     - Rapid typing cancels previous debounce
@@ -261,6 +261,19 @@
   Success: Debounce behavior verified, prevents API spam
   Module: Search UI (prevents expensive OpenAI calls)
   Time: 45min
+
+  Work Log:
+  - Created 8 comprehensive debounce and search tests
+  - Mocked useAction (Convex) hook
+  - Verified 500ms debounce delay works correctly
+  - Verified rapid typing cancels previous debounce (only searches final value)
+  - Verified loading state callbacks (onLoadingChange)
+  - Verified onResults callback with mock search results
+  - Verified error handling (logs error, returns empty results)
+  - Verified empty/whitespace queries don't trigger search
+  - Verified custom placeholder text prop
+  - All 8 tests passing (total: 95 tests, up from 87)
+  - Debounce behavior prevents API spam (cost optimization)
   ```
 
 - [ ] **Test RelatedQuestions component (lazy loading)**
