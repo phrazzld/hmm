@@ -13,7 +13,6 @@ import type { Id } from "../_generated/dataModel";
  */
 export function mockDb() {
   const storage = new Map<string, any>();
-  const indexes = new Map<string, Map<string, any[]>>();
 
   return {
     get: vi.fn(async (id: Id<any>) => {
@@ -48,7 +47,7 @@ export function mockDb() {
       }
 
       return {
-        withIndex: vi.fn((indexName: string, filterFn?: (q: any) => any) => {
+        withIndex: vi.fn((_indexName: string, filterFn?: (q: any) => any) => {
           // Simple filter implementation for testing
           let filtered = results;
 
@@ -144,12 +143,12 @@ export function mockAuth(options?: {
  */
 export function mockScheduler() {
   return {
-    runAfter: vi.fn(async (delayMs: number, functionReference: any, args: any) => {
+    runAfter: vi.fn(async (_delayMs: number, _functionReference: any, _args: any) => {
       // In tests, we just record that scheduling was called
       // Don't try to access properties on functionReference as it may be a complex object
       return `scheduled:${Date.now()}`;
     }),
-    runAt: vi.fn(async (timestamp: number, functionReference: any, args: any) => {
+    runAt: vi.fn(async (_timestamp: number, _functionReference: any, _args: any) => {
       return `scheduled:${Date.now()}`;
     }),
   };

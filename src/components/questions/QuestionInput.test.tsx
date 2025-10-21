@@ -26,7 +26,7 @@ describe("QuestionInput", () => {
     mockCreateQuestion = vi.fn();
     mockToast = vi.fn();
 
-    vi.mocked(useMutation).mockReturnValue(mockCreateQuestion);
+    vi.mocked(useMutation).mockReturnValue(mockCreateQuestion as any);
     vi.mocked(useToast).mockReturnValue({ toast: mockToast } as any);
   });
 
@@ -176,7 +176,7 @@ describe("QuestionInput", () => {
     expect(mockCreateQuestion).not.toHaveBeenCalled();
 
     // Textarea should still have content (with newline)
-    expect(textarea.value).toContain("First line");
+    expect((textarea as HTMLTextAreaElement).value).toContain("First line");
   });
 
   it("should show error toast and restore text when mutation fails", async () => {

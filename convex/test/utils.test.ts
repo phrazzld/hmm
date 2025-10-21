@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { mockDb, mockAuth, mockScheduler, mockQueryCtx, mockMutationCtx } from "./utils";
+import type { Id } from "../_generated/dataModel";
 
 describe("mockDb", () => {
   it("should insert and retrieve documents", async () => {
@@ -115,7 +116,7 @@ describe("mockQueryCtx", () => {
 
     const ctx = mockQueryCtx({ dbData: testData });
 
-    const doc = await ctx.db.get("users:123" as any);
+    const doc: any = await ctx.db.get("users:123" as any);
     expect(doc?.name).toBe("Alice");
   });
 });
@@ -135,11 +136,13 @@ describe("mockMutationCtx", () => {
 
     const id = await ctx.db.insert("questions", {
       text: "Test question",
-      userId: "user1",
+      userId: "user1" as Id<"users">,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
     });
 
     const questions = await ctx.db.query("questions").collect();
     expect(questions).toHaveLength(1);
-    expect(questions[0]._id).toBe(id);
+    expect(questions[0]!._id).toBe(id);
   });
 });

@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { createQuestion, getQuestions, getQuestion } from "./questions";
 import { mockMutationCtx, mockQueryCtx } from "./test/utils";
-import type { Id } from "./_generated/dataModel";
+import type { Id, Doc } from "./_generated/dataModel";
 
 describe("createQuestion", () => {
   it("should insert question with valid text and schedule embedding", async () => {
@@ -18,11 +18,12 @@ describe("createQuestion", () => {
       createdAt: Date.now(),
     });
 
+    // @ts-expect-error - Convex functions callable directly in tests
     const questionId = await createQuestion(ctx, { text: "What is the meaning of life?" });
 
     // Verify question was inserted
     expect(questionId).toBeDefined();
-    const question = await ctx.db.get(questionId);
+    const question = (await ctx.db.get(questionId)) as Doc<"questions"> | null;
     expect(question).toBeDefined();
     expect(question?.text).toBe("What is the meaning of life?");
     expect(question?.userId).toBeDefined();
@@ -38,6 +39,7 @@ describe("createQuestion", () => {
   it("should throw error for unauthenticated user", async () => {
     const ctx = mockMutationCtx({ authenticated: false });
 
+    // @ts-expect-error - Convex functions callable directly in tests
     await expect(createQuestion(ctx, { text: "This should fail" })).rejects.toThrow(
       "Unauthenticated"
     );
@@ -57,9 +59,10 @@ describe("createQuestion", () => {
       createdAt: Date.now(),
     });
 
+    // @ts-expect-error - Convex functions callable directly in tests
     const questionId = await createQuestion(ctx, { text: "Test question" });
 
-    const question = await ctx.db.get(questionId);
+    const question = (await ctx.db.get(questionId)) as Doc<"questions"> | null;
     expect(question?.userId).toBe(userId);
   });
 
@@ -78,10 +81,11 @@ describe("createQuestion", () => {
     });
 
     const beforeCreate = Date.now();
+    // @ts-expect-error - Convex functions callable directly in tests
     const questionId = await createQuestion(ctx, { text: "Timestamp test" });
     const afterCreate = Date.now();
 
-    const question = await ctx.db.get(questionId);
+    const question = (await ctx.db.get(questionId)) as Doc<"questions"> | null;
     expect(question?.createdAt).toBeDefined();
     expect(question?.updatedAt).toBeDefined();
 
@@ -118,14 +122,16 @@ describe("createQuestion", () => {
     });
 
     // Create questions for each user
+    // @ts-expect-error - Convex functions callable directly in tests
     const q1 = await createQuestion(ctx1, { text: "User 1 question" });
+    // @ts-expect-error - Convex functions callable directly in tests
     const q2 = await createQuestion(ctx2, { text: "User 2 question" });
 
     // Verify questions are different and have different users
     expect(q1).not.toBe(q2);
 
-    const question1 = await ctx1.db.get(q1);
-    const question2 = await ctx2.db.get(q2);
+    const question1 = (await ctx1.db.get(q1)) as Doc<"questions"> | null;
+    const question2 = (await ctx2.db.get(q2)) as Doc<"questions"> | null;
 
     expect(question1?.userId).not.toBe(question2?.userId);
   });
@@ -138,6 +144,7 @@ describe("createQuestion", () => {
     });
 
     // No user in database yet
+    // @ts-expect-error - Convex functions callable directly in tests
     const questionId = await createQuestion(ctx, { text: "First question" });
 
     // Verify question was created
@@ -146,7 +153,7 @@ describe("createQuestion", () => {
     // Verify user was auto-created by requireAuth
     const users = await ctx.db.query("users").collect();
     expect(users).toHaveLength(1);
-    expect(users[0].clerkId).toBe("new-user");
+    expect(users[0]!.clerkId).toBe("new-user");
   });
 });
 
@@ -158,6 +165,7 @@ describe("getQuestions", () => {
     });
 
     // Create user 1
+    // @ts-expect-error - mockQueryCtx db has insert for test setup
     const user1Id = await ctx.db.insert("users", {
       clerkId: "user-1",
       email: "user1@example.com",
@@ -166,6 +174,7 @@ describe("getQuestions", () => {
     });
 
     // Create user 2
+    // @ts-expect-error - mockQueryCtx db has insert for test setup
     const user2Id = await ctx.db.insert("users", {
       clerkId: "user-2",
       email: "user2@example.com",
@@ -174,6 +183,7 @@ describe("getQuestions", () => {
     });
 
     // Create questions for user 1
+    // @ts-expect-error - mockQueryCtx db has insert for test setup
     await ctx.db.insert("questions", {
       userId: user1Id,
       text: "User 1 question 1",
@@ -181,6 +191,7 @@ describe("getQuestions", () => {
       updatedAt: Date.now() - 2000,
     });
 
+    // @ts-expect-error - mockQueryCtx db has insert for test setup
     await ctx.db.insert("questions", {
       userId: user1Id,
       text: "User 1 question 2",
@@ -189,6 +200,7 @@ describe("getQuestions", () => {
     });
 
     // Create question for user 2 (should not be returned)
+    // @ts-expect-error - mockQueryCtx db has insert for test setup
     await ctx.db.insert("questions", {
       userId: user2Id,
       text: "User 2 question",
@@ -196,13 +208,14 @@ describe("getQuestions", () => {
       updatedAt: Date.now(),
     });
 
+    // @ts-expect-error - Convex functions callable directly in tests
     const result = await getQuestions(ctx, {
       paginationOpts: { numItems: 10, cursor: undefined },
     });
 
     // Should only return user 1's questions
     expect(result.page).toHaveLength(2);
-    expect(result.page.every((q) => q.userId === user1Id)).toBe(true);
+    expect(result.page.every((q: any) => q.userId === user1Id)).toBe(true);
   });
 
   it("should return empty page for new user (no user record)", async () => {
@@ -211,6 +224,7 @@ describe("getQuestions", () => {
       email: "new@example.com",
     });
 
+    // @ts-expect-error - Convex functions callable directly in tests
     const result = await getQuestions(ctx, {
       paginationOpts: { numItems: 10, cursor: undefined },
     });
@@ -223,6 +237,7 @@ describe("getQuestions", () => {
   it("should return empty page for unauthenticated user", async () => {
     const ctx = mockQueryCtx({ authenticated: false });
 
+    // @ts-expect-error - Convex functions callable directly in tests
     const result = await getQuestions(ctx, {
       paginationOpts: { numItems: 10, cursor: undefined },
     });
@@ -239,6 +254,7 @@ describe("getQuestions", () => {
     });
 
     // Create user
+    // @ts-expect-error - mockQueryCtx db has insert for test setup
     const userId = await ctx.db.insert("users", {
       clerkId: "user-1",
       email: "user1@example.com",
@@ -248,6 +264,7 @@ describe("getQuestions", () => {
 
     // Create questions with different timestamps
     const now = Date.now();
+    // @ts-expect-error - mockQueryCtx db has insert for test setup
     await ctx.db.insert("questions", {
       userId,
       text: "Oldest question",
@@ -255,6 +272,7 @@ describe("getQuestions", () => {
       updatedAt: now - 3000,
     });
 
+    // @ts-expect-error - mockQueryCtx db has insert for test setup
     await ctx.db.insert("questions", {
       userId,
       text: "Middle question",
@@ -262,6 +280,7 @@ describe("getQuestions", () => {
       updatedAt: now - 2000,
     });
 
+    // @ts-expect-error - mockQueryCtx db has insert for test setup
     await ctx.db.insert("questions", {
       userId,
       text: "Newest question",
@@ -269,6 +288,7 @@ describe("getQuestions", () => {
       updatedAt: now - 1000,
     });
 
+    // @ts-expect-error - Convex functions callable directly in tests
     const result = await getQuestions(ctx, {
       paginationOpts: { numItems: 10, cursor: undefined },
     });
@@ -286,6 +306,7 @@ describe("getQuestions", () => {
     });
 
     // Create user
+    // @ts-expect-error - mockQueryCtx db has insert for test setup
     const userId = await ctx.db.insert("users", {
       clerkId: "user-1",
       email: "user1@example.com",
@@ -295,6 +316,7 @@ describe("getQuestions", () => {
 
     // Create 5 questions
     for (let i = 0; i < 5; i++) {
+      // @ts-expect-error - mockQueryCtx db has insert for test setup
       await ctx.db.insert("questions", {
         userId,
         text: `Question ${i}`,
@@ -304,6 +326,7 @@ describe("getQuestions", () => {
     }
 
     // Request only 2 questions
+    // @ts-expect-error - Convex functions callable directly in tests
     const result = await getQuestions(ctx, {
       paginationOpts: { numItems: 2, cursor: undefined },
     });
@@ -322,6 +345,7 @@ describe("getQuestion", () => {
     });
 
     // Create user
+    // @ts-expect-error - mockQueryCtx db has insert for test setup
     const userId = await ctx.db.insert("users", {
       clerkId: "user-1",
       email: "user1@example.com",
@@ -330,6 +354,7 @@ describe("getQuestion", () => {
     });
 
     // Create question
+    // @ts-expect-error - mockQueryCtx db has insert for test setup
     const questionId = await ctx.db.insert("questions", {
       userId,
       text: "Test question",
@@ -337,6 +362,7 @@ describe("getQuestion", () => {
       updatedAt: Date.now(),
     });
 
+    // @ts-expect-error - Convex functions callable directly in tests
     const question = await getQuestion(ctx, { questionId });
 
     expect(question).toBeDefined();
@@ -351,6 +377,7 @@ describe("getQuestion", () => {
     });
 
     // Create user 1
+    // @ts-expect-error - mockQueryCtx db has insert for test setup
     await ctx.db.insert("users", {
       clerkId: "user-1",
       email: "user1@example.com",
@@ -359,6 +386,7 @@ describe("getQuestion", () => {
     });
 
     // Create user 2
+    // @ts-expect-error - mockQueryCtx db has insert for test setup
     const user2Id = await ctx.db.insert("users", {
       clerkId: "user-2",
       email: "user2@example.com",
@@ -367,6 +395,7 @@ describe("getQuestion", () => {
     });
 
     // Create question owned by user 2
+    // @ts-expect-error - mockQueryCtx db has insert for test setup
     const questionId = await ctx.db.insert("questions", {
       userId: user2Id,
       text: "User 2's question",
@@ -375,6 +404,7 @@ describe("getQuestion", () => {
     });
 
     // User 1 tries to access user 2's question
+    // @ts-expect-error - Convex functions callable directly in tests
     await expect(getQuestion(ctx, { questionId })).rejects.toThrow(
       "Not authorized to access this question"
     );
@@ -387,6 +417,7 @@ describe("getQuestion", () => {
     });
 
     // Create user
+    // @ts-expect-error - mockQueryCtx db has insert for test setup
     await ctx.db.insert("users", {
       clerkId: "user-1",
       email: "user1@example.com",
@@ -396,6 +427,7 @@ describe("getQuestion", () => {
 
     const fakeQuestionId = "questions:nonexistent" as Id<"questions">;
 
+    // @ts-expect-error - Convex functions callable directly in tests
     await expect(getQuestion(ctx, { questionId: fakeQuestionId })).rejects.toThrow(
       "Question not found"
     );
@@ -406,6 +438,7 @@ describe("getQuestion", () => {
 
     const fakeQuestionId = "questions:test" as Id<"questions">;
 
+    // @ts-expect-error - Convex functions callable directly in tests
     await expect(getQuestion(ctx, { questionId: fakeQuestionId })).rejects.toThrow(
       "Unauthenticated"
     );
