@@ -276,7 +276,8 @@
   - Debounce behavior prevents API spam (cost optimization)
   ```
 
-- [ ] **Test RelatedQuestions component (lazy loading)**
+- [x] **Test RelatedQuestions component (lazy loading)**
+
   ```
   Files: src/components/questions/RelatedQuestions.test.tsx (NEW)
   Approach: Render, click to expand, mock useAction
@@ -290,6 +291,21 @@
   Success: Lazy loading verified, prevents unnecessary API calls
   Module: Related questions UI (performance optimization)
   Time: 45min
+
+  Work Log:
+  - Created 9 comprehensive lazy loading and UI tests
+  - Mocked useAction (Convex) hook
+  - Verified component collapsed by default (progressive disclosure)
+  - Verified first expand triggers action call (lazy loading behavior)
+  - Verified second expand reuses cached results (no duplicate API calls)
+  - Verified loading state shows 3 skeleton cards during fetch
+  - Verified empty state shows "No related questions found yet"
+  - Verified results render with question text and timestamps
+  - Verified error handling (logs error, shows empty state)
+  - Verified custom limit prop passed to action
+  - Verified long text truncation (truncateText with 100 char limit)
+  - All 9 tests passing (total: 104 tests, up from 95)
+  - Performance optimization verified: Prevents unnecessary API calls
   ```
 
 ---
